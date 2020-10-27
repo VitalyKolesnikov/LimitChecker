@@ -4,6 +4,10 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.User;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +17,9 @@ public class OrdersGenerator {
 
     private static final int NUM = 10;
     private static final Random RANDOM = new Random();
+    private static final String ORDERS = "src/main/resources/orders.ser";
 
-    public static List<Order> GenerateOrders() {
+    public static List<Order> generate() {
         List<Order> result = new ArrayList<>();
         for (int i = 1; i <= NUM; i++) {
             LocalTime time = LocalTime.now();
@@ -28,5 +33,34 @@ public class OrdersGenerator {
             result.add(order);
         }
         return result;
+    }
+
+    public static void writeToFile() {
+        List<Order> list = generate();
+        try (FileOutputStream fos = new FileOutputStream(ORDERS);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            for (Order order : list) {
+                oos.writeObject(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readFromFile() {
+        try (FileInputStream file = new FileInputStream(ORDERS);
+             ObjectInputStream reader = new ObjectInputStream(file)) {
+            while (true) {
+                try {
+                    Order order = (Order) reader.readObject();
+                    System.out.println(order);
+                } catch (Exception ex) {
+                    System.err.println("end of file ");
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

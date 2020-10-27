@@ -1,15 +1,17 @@
 package org.example.limitchecker.model;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
-public class Order {
-    private int id;
-    private LocalTime time;
-    private User user;
-    private String symbol;
-    private int shareCount;
-    private Side side;
-    private Integer price;
+public class Order implements Serializable {
+
+    private final int id;
+    private final LocalTime time;
+    private final User user;
+    private final String symbol;
+    private final int shareCount;
+    private final Side side;
+    private final Integer price;
 
     public Order(int id, LocalTime time, User user, String symbol, int shareCount, Side side, Integer price) {
         this.id = id;
