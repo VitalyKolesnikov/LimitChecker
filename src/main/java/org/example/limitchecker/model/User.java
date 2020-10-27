@@ -1,6 +1,21 @@
 package org.example.limitchecker.model;
 
-public class User {
-    private int id;
-    private String name;
+import java.util.Random;
+
+public enum User {
+    JOHN,
+    MIKE,
+    SAM,
+    CHARLIE,
+    ROBERT,
+    STEVEN,
+    COREY,
+    BARBARA,
+    MICHELE,
+    SARAH;
+
+    public static User getRandom() {
+        Random random = new Random();
+        return values()[random.nextInt(values().length)];
+    }
 }
