@@ -47,20 +47,21 @@ public class OrdersGenerator {
         }
     }
 
-    public static void readFromFile() {
+    public static List<Order> getFromFile() {
+        List<Order> result = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(ORDERS);
              ObjectInputStream reader = new ObjectInputStream(file)) {
             while (true) {
                 try {
                     Order order = (Order) reader.readObject();
-                    System.out.println(order);
+                    result.add(order);
                 } catch (Exception ex) {
-                    System.err.println("end of file ");
                     break;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return result;
     }
 }

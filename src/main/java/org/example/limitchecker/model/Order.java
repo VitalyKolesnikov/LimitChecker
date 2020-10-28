@@ -23,6 +23,34 @@ public class Order implements Serializable {
         this.price = price;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    public Side getSide() {
+        return side;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -34,5 +62,14 @@ public class Order implements Serializable {
                 ", side=" + side +
                 ", price=" + price +
                 '}';
+    }
+
+    public String getShortInfo() {
+        return "[" + user +
+                ", " + symbol +
+                ", " + shareCount +
+                ", " + side +
+                ", " + price +
+                ']';
     }
 }
