@@ -2,11 +2,11 @@ package org.example.limitchecker.model.limit;
 
 import org.example.limitchecker.model.Order;
 
-public class MaxLotsInOrderLimit implements Limit {
+public class LotsInOrderLimit implements Limit {
 
     private final int maxLots;
 
-    public MaxLotsInOrderLimit(int maxLots) {
+    public LotsInOrderLimit(int maxLots) {
         this.maxLots = maxLots;
     }
 

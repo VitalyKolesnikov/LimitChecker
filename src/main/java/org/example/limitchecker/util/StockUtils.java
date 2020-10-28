@@ -9,7 +9,7 @@ import static org.example.limitchecker.util.FileUtils.getFileContents;
 
 public class StockUtils {
 
-    private static final String STOCKS = "src/main/resources/top100.csv";
+    private static final String STOCKS = "src/main/resources/top5.csv";
 
     public static List<String> getStocks() {
         List<String> result = new ArrayList<>();

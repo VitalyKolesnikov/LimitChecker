@@ -2,8 +2,10 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
-import org.example.limitchecker.model.limit.MaxLotsInOrderLimit;
+import org.example.limitchecker.model.limit.LotsInOrderLimit;
+import org.example.limitchecker.model.limit.SymbolPositionLimit;
 import org.example.limitchecker.util.OrdersGenerator;
+import org.example.limitchecker.util.StockUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +16,12 @@ public class Main {
 
         ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(3);
 
-//        OrdersGenerator.writeToFile();
+        OrdersGenerator.writeToFile();
         List<Order> orderList = OrdersGenerator.getFromFile();
 
         List<Limit> limitList= new ArrayList<>();
-        limitList.add(new MaxLotsInOrderLimit(50));
+        limitList.add(new LotsInOrderLimit(60));
+        limitList.add(new SymbolPositionLimit(-40, 40));
 
         Trader trader1 = new Trader(orderQueue, orderList.subList(0, 5));
         Trader trader2 = new Trader(orderQueue, orderList.subList(5, orderList.size()));
@@ -36,5 +39,10 @@ public class Main {
         Thread.sleep(50);
 
         checkerThread.start();
+
+        checkerThread.join();
+        System.out.println("---------------------");
+        System.out.println("Result symbol positions");
+        StockUtils.getStocks().forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getSymbolPosition(e)));
     }
 }

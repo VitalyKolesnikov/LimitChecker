@@ -51,6 +51,10 @@ public class Order implements Serializable {
         return price;
     }
 
+    public int getPositionChange() {
+        return side.equals(Side.BUY) ? lotCount : -(lotCount);
+    }
+
     @Override
     public String toString() {
         return "Order{" +
