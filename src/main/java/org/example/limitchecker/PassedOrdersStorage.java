@@ -10,9 +10,24 @@ import java.util.stream.Stream;
 public class PassedOrdersStorage {
     public static List<Order> orderList = new ArrayList<>();
 
-    public static int getSymbolPosition(String symbol) {
+    public static Stream<Order> getOrdersBySymbol(String symbol) {
         return orderList.stream()
-                .filter(order -> order.getSymbol().equals(symbol))
+                .filter(order -> order.getSymbol().equals(symbol));
+    }
+
+    public static Stream<Order> getOrdersBySymbolAndUser(String symbol, User user) {
+        return getOrdersBySymbol(symbol)
+                .filter(order -> order.getUser().equals(user));
+    }
+
+    public static int getSymbolPosition(String symbol) {
+        return getOrdersBySymbol(symbol)
+                .mapToInt(Order::getPositionChange)
+                .sum();
+    }
+
+    public static int getSymbolPositionPerUser(String symbol, User user) {
+        return getOrdersBySymbolAndUser(symbol, user)
                 .mapToInt(Order::getPositionChange)
                 .sum();
     }

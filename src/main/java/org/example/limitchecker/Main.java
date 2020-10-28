@@ -22,6 +22,7 @@ public class Main {
         List<Limit> limitList= new ArrayList<>();
         limitList.add(new LotsInOrderLimit(70));
         limitList.add(new SymbolPositionLimit(-50, 50));
+        limitList.add(new SymbolPositionPerUserLimit(-30, 30));
         limitList.add(new UserOrdersLimit(2));
         limitList.add(new UserOrdersPerSymbolLimit(1));
 

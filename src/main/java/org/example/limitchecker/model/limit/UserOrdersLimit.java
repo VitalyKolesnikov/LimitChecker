@@ -13,6 +13,6 @@ public class UserOrdersLimit implements Limit {
 
     @Override
     public boolean check(Order order) {
-        return PassedOrdersStorage.getUserOrdersCount(order.getUser()) <= maxOrders;
+        return PassedOrdersStorage.getUserOrdersCount(order.getUser()) < maxOrders;
     }
 }

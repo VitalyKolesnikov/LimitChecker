@@ -5,8 +5,8 @@ import org.example.limitchecker.model.Order;
 
 public class SymbolPositionLimit implements Limit {
 
-    private final int minPosition;
-    private final int maxPosition;
+    protected final int minPosition;
+    protected final int maxPosition;
 
     public SymbolPositionLimit(int minPosition, int maxPosition) {
         this.minPosition = minPosition;
