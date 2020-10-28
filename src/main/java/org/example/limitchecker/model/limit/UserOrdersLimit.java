@@ -5,7 +5,7 @@ import org.example.limitchecker.model.Order;
 
 public class UserOrdersLimit implements Limit {
 
-    private final int maxOrders;
+    protected final int maxOrders;
 
     public UserOrdersLimit(int maxOrders) {
         this.maxOrders = maxOrders;
@@ -13,6 +13,6 @@ public class UserOrdersLimit implements Limit {
 
     @Override
     public boolean check(Order order) {
-        return PassedOrdersStorage.getUserOrdersCount(order.getUser()) < maxOrders;
+        return PassedOrdersStorage.getUserOrdersCount(order.getUser()) <= maxOrders;
     }
 }
