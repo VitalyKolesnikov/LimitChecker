@@ -10,24 +10,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(3);
+        ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(50);
 
         OrdersGenerator.writeToFile();
         List<Order> orderList = OrdersGenerator.getFromFile();
 
-        List<Limit> limitList= new ArrayList<>();
+        List<Limit> limitList = new ArrayList<>();
         limitList.add(new LotsInOrderLimit(70));
-        limitList.add(new SymbolPositionLimit(-50, 50));
-        limitList.add(new SymbolPositionPerUserLimit(-30, 30));
-        limitList.add(new UserOrdersLimit(2));
-        limitList.add(new UserOrdersPerSymbolLimit(1));
+        limitList.add(new SymbolPositionLimit(-500, 500));
+        limitList.add(new SymbolPositionPerUserLimit(-300, 300));
+        limitList.add(new UserOrdersLimit(50));
+        limitList.add(new UserOrdersPerSymbolLimit(10));
 
-        Trader trader1 = new Trader(orderQueue, orderList.subList(0, 5));
-        Trader trader2 = new Trader(orderQueue, orderList.subList(5, orderList.size()));
+        Trader trader1 = new Trader(orderQueue, orderList.subList(0, 500));
+        Trader trader2 = new Trader(orderQueue, orderList.subList(500, orderList.size()));
 
         LimitChecker checker = new LimitChecker(orderQueue, limitList);
 
@@ -36,13 +37,19 @@ public class Main {
 
         Thread checkerThread = new Thread(checker, "Checker thread");
 
+        long startTime = System.nanoTime();
+
         trader1Thread.start();
         trader2Thread.start();
 
-        Thread.sleep(50);
+        Thread.sleep(10);
 
         checkerThread.start();
         checkerThread.join();
+
+        long endTime = System.nanoTime();
+        long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+        System.out.println("Time: " + total + " milliseconds");
 
         System.out.println("-----------Result symbol positions----------");
         StockUtils.getStocks().forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getSymbolPosition(e)));

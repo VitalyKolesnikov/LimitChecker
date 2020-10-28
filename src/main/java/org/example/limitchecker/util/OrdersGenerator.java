@@ -15,9 +15,13 @@ import java.util.Random;
 
 public class OrdersGenerator {
 
-    private static final int NUM = 15;
+    private static final int NUM = 1000;
     private static final Random RANDOM = new Random();
     private static final String ORDERS = "src/main/resources/orders.ser";
+
+    public static void main(String[] args) {
+        writeToFile();
+    }
 
     public static List<Order> generate() {
         List<Order> result = new ArrayList<>();
