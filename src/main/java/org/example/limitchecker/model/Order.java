@@ -9,16 +9,16 @@ public class Order implements Serializable {
     private final LocalTime time;
     private final User user;
     private final String symbol;
-    private final int shareCount;
+    private final int lotCount;
     private final Side side;
     private final Integer price;
 
-    public Order(int id, LocalTime time, User user, String symbol, int shareCount, Side side, Integer price) {
+    public Order(int id, LocalTime time, User user, String symbol, int lotCount, Side side, Integer price) {
         this.id = id;
         this.time = time;
         this.user = user;
         this.symbol = symbol;
-        this.shareCount = shareCount;
+        this.lotCount = lotCount;
         this.side = side;
         this.price = price;
     }
@@ -39,8 +39,8 @@ public class Order implements Serializable {
         return symbol;
     }
 
-    public int getShareCount() {
-        return shareCount;
+    public int getLotCount() {
+        return lotCount;
     }
 
     public Side getSide() {
@@ -58,7 +58,7 @@ public class Order implements Serializable {
                 ", time=" + time +
                 ", user=" + user +
                 ", symbol='" + symbol + '\'' +
-                ", shareCount=" + shareCount +
+                ", lotCount=" + lotCount +
                 ", side=" + side +
                 ", price=" + price +
                 '}';
@@ -67,7 +67,7 @@ public class Order implements Serializable {
     public String getShortInfo() {
         return "[" + user +
                 ", " + symbol +
-                ", " + shareCount +
+                ", " + lotCount +
                 ", " + side +
                 ", " + price +
                 ']';
