@@ -1,13 +1,16 @@
 package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
+import org.example.limitchecker.model.User;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.model.limit.LotsInOrderLimit;
 import org.example.limitchecker.model.limit.SymbolPositionLimit;
+import org.example.limitchecker.model.limit.UserOrdersLimit;
 import org.example.limitchecker.util.OrdersGenerator;
 import org.example.limitchecker.util.StockUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -22,6 +25,7 @@ public class Main {
         List<Limit> limitList= new ArrayList<>();
         limitList.add(new LotsInOrderLimit(60));
         limitList.add(new SymbolPositionLimit(-40, 40));
+        limitList.add(new UserOrdersLimit(2));
 
         Trader trader1 = new Trader(orderQueue, orderList.subList(0, 5));
         Trader trader2 = new Trader(orderQueue, orderList.subList(5, orderList.size()));
@@ -39,10 +43,12 @@ public class Main {
         Thread.sleep(50);
 
         checkerThread.start();
-
         checkerThread.join();
-        System.out.println("---------------------");
-        System.out.println("Result symbol positions");
+
+        System.out.println("-----------Result symbol positions----------");
         StockUtils.getStocks().forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getSymbolPosition(e)));
+
+        System.out.println("-----------Result user orders count----------");
+        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getUserOrdersCount(e)));
     }
 }

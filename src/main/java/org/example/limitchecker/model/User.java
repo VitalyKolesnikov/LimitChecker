@@ -8,10 +8,10 @@ public enum User {
     SAM,
     CHARLIE,
     ROBERT,
-    STEVEN,
-    COREY,
-    BARBARA,
-    MICHELE,
+//    STEVEN,
+//    COREY,
+//    BARBARA,
+//    MICHELE,
     SARAH;
 
     public static User getRandom() {
