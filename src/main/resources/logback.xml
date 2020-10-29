@@ -5,14 +5,14 @@
         <file>log/limitchecker.log</file>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%date %-5level %logger{50}.%M:%L - %msg%n</pattern>
+            <pattern>%date %-5level - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%class{50}.%M:%L) - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) - %msg%n</pattern>
         </encoder>
     </appender>
 

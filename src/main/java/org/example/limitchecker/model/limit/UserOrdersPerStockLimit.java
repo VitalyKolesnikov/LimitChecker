@@ -3,14 +3,14 @@ package org.example.limitchecker.model.limit;
 import org.example.limitchecker.PassedOrdersStorage;
 import org.example.limitchecker.model.Order;
 
-public class UserOrdersPerSymbolLimit extends UserOrdersLimit {
+public class UserOrdersPerStockLimit extends UserOrdersLimit {
 
-    public UserOrdersPerSymbolLimit(int maxOrders) {
+    public UserOrdersPerStockLimit(int maxOrders) {
         super(maxOrders);
     }
 
     @Override
     public boolean check(Order order) {
-        return PassedOrdersStorage.getUserOrdersPerSymbolCount(order.getUser(), order.getSymbol()) < maxOrders;
+        return PassedOrdersStorage.getUserOrdersPerStockCount(order.getUser(), order.getStock()) < maxOrders;
     }
 }

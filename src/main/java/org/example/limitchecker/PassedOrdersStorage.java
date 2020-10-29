@@ -1,6 +1,7 @@
 package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
+import org.example.limitchecker.model.Stock;
 import org.example.limitchecker.model.User;
 
 import java.util.ArrayList;
@@ -10,24 +11,24 @@ import java.util.stream.Stream;
 public class PassedOrdersStorage {
     public static List<Order> orderList = new ArrayList<>();
 
-    public static Stream<Order> getOrdersBySymbol(String symbol) {
+    public static Stream<Order> getOrdersByStock(Stock stock) {
         return orderList.stream()
-                .filter(order -> order.getSymbol().equals(symbol));
+                .filter(order -> order.getStock().equals(stock));
     }
 
-    public static Stream<Order> getOrdersBySymbolAndUser(String symbol, User user) {
-        return getOrdersBySymbol(symbol)
+    public static Stream<Order> getOrdersByStockAndUser(Stock stock, User user) {
+        return getOrdersByStock(stock)
                 .filter(order -> order.getUser().equals(user));
     }
 
-    public static int getSymbolPosition(String symbol) {
-        return getOrdersBySymbol(symbol)
+    public static int getStockPosition(Stock stock) {
+        return getOrdersByStock(stock)
                 .mapToInt(Order::getPositionChange)
                 .sum();
     }
 
-    public static int getSymbolPositionPerUser(String symbol, User user) {
-        return getOrdersBySymbolAndUser(symbol, user)
+    public static int getStockPositionPerUser(Stock stock, User user) {
+        return getOrdersByStockAndUser(stock, user)
                 .mapToInt(Order::getPositionChange)
                 .sum();
     }
@@ -41,9 +42,9 @@ public class PassedOrdersStorage {
         return (int) getUserOrders(user).count();
     }
 
-    public static int getUserOrdersPerSymbolCount(User user, String symbol) {
+    public static int getUserOrdersPerStockCount(User user, Stock stock) {
         return (int) getUserOrders(user)
-                .filter(order -> order.getSymbol().equals(symbol))
+                .filter(order -> order.getStock().equals(stock))
                 .count();
     }
 

@@ -1,5 +1,7 @@
 package org.example.limitchecker.util;
 
+import org.example.limitchecker.model.Stock;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +11,14 @@ import static org.example.limitchecker.util.FileUtils.getFileContents;
 
 public class StockUtils {
 
-    private static final String STOCKS = "src/main/resources/top5.csv";
+    private static final String STOCKS = "src/main/resources/top100.csv";
 
-    public static List<String> getStocks() {
-        List<String> result = new ArrayList<>();
+    public static List<Stock> getStocks() {
+        List<Stock> result = new ArrayList<>();
         try {
             for (String line : getFileContents(STOCKS)) {
-                result.add(line.split(",")[0]);
+                String[] stockArr = line.split(",");
+                result.add(new Stock(stockArr[0], stockArr[1], Double.parseDouble(stockArr[5])));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -23,8 +26,8 @@ public class StockUtils {
         return result;
     }
 
-    public static String getRandomStock() {
-        List<String> list = getStocks();
+    public static Stock getRandomStock() {
+        List<Stock> list = getStocks();
         Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
