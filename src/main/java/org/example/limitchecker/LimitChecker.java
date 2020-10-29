@@ -2,11 +2,15 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class LimitChecker implements Runnable {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final ArrayBlockingQueue<Order> queue;
     private final List<Limit> limits;
@@ -20,11 +24,11 @@ public class LimitChecker implements Runnable {
         Order order = queue.take();
         for (Limit limit : limits) {
             if (!limit.check(order)) {
-                System.out.println("Order " + order + " status: __REJECT__ (" + limit.getClass().getSimpleName() + " violation)");
+                log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
                 return;
             }
         }
-        System.out.println("Order " + order + " status: __PASS__");
+        log.info("Order {} status: __PASS__", order);
         PassedOrdersStorage.orderList.add(order);
     }
 
