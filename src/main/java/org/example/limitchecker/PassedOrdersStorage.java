@@ -48,9 +48,9 @@ public class PassedOrdersStorage {
                 .count();
     }
 
-    public static int getUserMoneyPosition(User user) {
+    public static Double getUserMoneyPosition(User user) {
         return getUserOrders(user)
-                .mapToInt(Order::getMoneyPositionChange)
+                .mapToDouble(Order::getMoneyPositionChange)
                 .sum();
     }
 }

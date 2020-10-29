@@ -14,7 +14,7 @@ public class UserMoneyPositionLimit implements Limit {
 
     @Override
     public boolean check(Order order) {
-        int potentialPosition = PassedOrdersStorage.getUserMoneyPosition(order.getUser()) + order.getMoneyPositionChange();
+        double potentialPosition = PassedOrdersStorage.getUserMoneyPosition(order.getUser()) + order.getMoneyPositionChange();
         if (potentialPosition < minPosition) return false;
         return potentialPosition <= maxPosition;
     }

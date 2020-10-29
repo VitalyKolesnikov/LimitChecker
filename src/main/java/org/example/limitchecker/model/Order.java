@@ -11,9 +11,9 @@ public class Order implements Serializable {
     private final Stock stock;
     private final int lotCount;
     private final Side side;
-    private final Integer price;
+    private final Double price;
 
-    public Order(int id, LocalTime time, User user, Stock stock, int lotCount, Side side, Integer price) {
+    public Order(int id, LocalTime time, User user, Stock stock, int lotCount, Side side, Double price) {
         this.id = id;
         this.time = time;
         this.user = user;
@@ -47,7 +47,7 @@ public class Order implements Serializable {
         return side;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -55,8 +55,8 @@ public class Order implements Serializable {
         return side.equals(Side.BUY) ? lotCount : -(lotCount);
     }
 
-    public int getMoneyPositionChange() {
-        int sum = lotCount * price;
+    public double getMoneyPositionChange() {
+        double sum = lotCount * price;
         return side.equals(Side.BUY) ? sum : -(sum);
     }
 

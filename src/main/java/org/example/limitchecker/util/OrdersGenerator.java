@@ -9,10 +9,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class OrdersGenerator {
 
@@ -32,7 +35,7 @@ public class OrdersGenerator {
             Stock stock = StockUtils.getRandomStock();
             int lotCount = RANDOM.nextInt(100);
             Side side = RANDOM.nextInt(10) > 5 ? Side.BUY : Side.SELL;
-            Integer price = RANDOM.nextInt(1000);
+            double price = randomPriceChange(stock.getPrice(), side);
 
             Order order = new Order(i, time, user, stock, lotCount, side, price);
             result.add(order);
@@ -68,5 +71,12 @@ public class OrdersGenerator {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static double randomPriceChange(double price, Side side) {
+        double random = ThreadLocalRandom.current().nextDouble(0.001, 0.01);
+        double newPrice = side.equals(Side.BUY) ? price - price * random : price + price * random;
+        BigDecimal bd = new BigDecimal(Double.toString(newPrice)).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

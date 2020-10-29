@@ -23,11 +23,11 @@ public class Main {
         List<Limit> limitList = new ArrayList<>();
 
         limitList.add(new LotsInOrderLimit(70));
-        limitList.add(new StockPositionLimit(-300, 300));
-        limitList.add(new StockPositionPerUserLimit(-150, 150));
+        limitList.add(new StockPositionLimit(-150, 150));
+        limitList.add(new StockPositionPerUserLimit(-75, 75));
         limitList.add(new UserOrdersLimit(65));
-        limitList.add(new UserOrdersPerStockLimit(5));
-        limitList.add(new UserMoneyPositionLimit(-50000, 50000));
+        limitList.add(new UserOrdersPerStockLimit(2));
+        limitList.add(new UserMoneyPositionLimit(-5000, 5000));
 
         Trader trader1 = new Trader(orderQueue, orderList.subList(0, 500));
         Trader trader2 = new Trader(orderQueue, orderList.subList(500, orderList.size()));
