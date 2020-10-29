@@ -29,7 +29,7 @@ public class Stock implements Serializable {
     @Override
     public String toString() {
         return "{" + symbol +
-                ", " + name +
+//                ", " + name +
                 ", " + price +
                 '}';
     }

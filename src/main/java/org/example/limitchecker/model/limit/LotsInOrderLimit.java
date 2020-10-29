@@ -4,7 +4,7 @@ import org.example.limitchecker.model.Order;
 
 public class LotsInOrderLimit implements Limit {
 
-    private final int maxLots;
+    protected final int maxLots;
 
     public LotsInOrderLimit(int maxLots) {
         this.maxLots = maxLots;
