@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OrdersGenerator {
 
-    private static final int NUM = 10;
+    private static final int NUM = 1000;
     private static final Random RANDOM = new Random();
     private static final String ORDERS = "src/main/resources/orders.ser";
 

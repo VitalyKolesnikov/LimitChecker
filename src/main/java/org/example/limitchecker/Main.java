@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(50);
+        ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(500);
 
         OrdersGenerator.writeToFile();
         List<Order> orderList = OrdersGenerator.getFromFile();
@@ -24,6 +24,7 @@ public class Main {
 
         limitList.add(new LotsInOrderLimit(70));
         limitList.add(new LotsInOrderPerUserLimit(30, User.MIKE));
+        limitList.add(new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"));
         limitList.add(new StockPositionLimit(-150, 150));
         limitList.add(new StockPositionPerUserLimit(-75, 75));
         limitList.add(new UserOrdersLimit(65));

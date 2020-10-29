@@ -5,7 +5,7 @@ import org.example.limitchecker.model.User;
 
 public class LotsInOrderPerUserLimit extends LotsInOrderLimit {
 
-    private User user;
+    protected User user;
 
     public LotsInOrderPerUserLimit(int maxLots, User user) {
         super(maxLots);
