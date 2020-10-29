@@ -2,10 +2,7 @@ package org.example.limitchecker.util;
 
 import com.google.gson.Gson;
 import org.example.limitchecker.model.User;
-import org.example.limitchecker.model.limit.Limit;
-import org.example.limitchecker.model.limit.LotsInOrderLimit;
-import org.example.limitchecker.model.limit.LotsInOrderPerUserLimit;
-import org.example.limitchecker.model.limit.LotsInOrderPerUserPerSymbolLimit;
+import org.example.limitchecker.model.limit.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -20,64 +17,67 @@ public class LimitUtils {
     private static final String LIMITS_PATH = "src/main/resources/limits/";
 
     public static List<Limit> loadLimits() {
+
         List<Limit> result = new ArrayList<>();
         Gson gson = new Gson();
 
-//        List<Class<?>> classes = new ArrayList<>();
-//        classes.add(LotsInOrderLimit[].class);
-//
-//        for (Class<?> cls : classes) {
-//            try (final FileReader fileReader = new FileReader("src/main/resources/limits/LotsInOrderLimit.txt")) {
-//                result.addAll(Arrays.asList(gson.fromJson(fileReader, cls));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        List<Class<? extends Limit[]>> classes = new ArrayList<>();
+        classes.add(LotsInOrderLimit[].class);
+        classes.add(LotsInOrderPerUserLimit[].class);
+        classes.add(LotsInOrderPerUserPerSymbolLimit[].class);
+        classes.add(StockPositionLimit[].class);
 
-        try (final FileReader fileReader = new FileReader("src/main/resources/limits/LotsInOrderPerUserLimit.txt")) {
-            final LotsInOrderPerUserLimit[] after = gson.fromJson(fileReader, LotsInOrderPerUserLimit[].class);
-            result.addAll(Arrays.asList(after));
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Class<? extends Limit[]> cls : classes) {
+            String name = cls.getSimpleName();
+            name = name.substring(0, name.length() - 2);
+            try (final FileReader fileReader = new FileReader(LIMITS_PATH + name + ".txt")) {
+                final Limit[] after = gson.fromJson(fileReader, cls);
+                result.addAll(Arrays.asList(after));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-//        try (final FileReader fileReader = new FileReader("src/main/resources/limits/LotsInOrderPerUserPerSymbolLimit.txt")) {
-//            final LotsInOrderPerUserPerSymbolLimit[] after = gson.fromJson(fileReader, LotsInOrderPerUserPerSymbolLimit[].class);
-//            result.addAll(Arrays.asList(after));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         return result;
     }
 
+    // this main method creates limit files
     public static void main(String[] args) {
 
         Gson gson = new Gson();
         File file;
 
-        file = new File("src/main/resources/limits/LotsInOrderLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderLimit.txt");
         try (final FileWriter fileWriter = new FileWriter(file)) {
-            final LotsInOrderLimit[] before = {new LotsInOrderLimit(70)};
-            gson.toJson(before, fileWriter);
+            final LotsInOrderLimit[] limitArr = {new LotsInOrderLimit(70)};
+            gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        file = new File("src/main/resources/limits/LotsInOrderPerUserLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderPerUserLimit.txt");
         try (final FileWriter fileWriter = new FileWriter(file)) {
-            final LotsInOrderPerUserLimit[] before = {new LotsInOrderPerUserLimit(30, User.MIKE), new LotsInOrderPerUserLimit(40, User.JOHN)};
-            gson.toJson(before, fileWriter);
+            final LotsInOrderPerUserLimit[] limitArr = {
+                    new LotsInOrderPerUserLimit(30, User.MIKE),
+                    new LotsInOrderPerUserLimit(40, User.JOHN)};
+            gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        file = new File("src/main/resources/limits/LotsInOrderPerUserPerSymbolLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderPerUserPerSymbolLimit.txt");
         try (final FileWriter fileWriter = new FileWriter(file)) {
-            final LotsInOrderPerUserPerSymbolLimit[] before = {
+            final LotsInOrderPerUserPerSymbolLimit[] limitArr = {
                     new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"),
                     new LotsInOrderPerUserPerSymbolLimit(20, User.ROBERT, "TRIL")};
-            gson.toJson(before, fileWriter);
+            gson.toJson(limitArr, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(LIMITS_PATH + "StockPositionLimit.txt");
+        try (final FileWriter fileWriter = new FileWriter(file)) {
+            final StockPositionLimit[] limitArr = {new StockPositionLimit(-150, 150)};
+            gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }

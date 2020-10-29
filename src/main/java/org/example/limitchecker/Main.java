@@ -17,7 +17,7 @@ public class Main {
 
         ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(500);
 
-        OrdersGenerator.writeOrdersToFile();
+//        OrdersGenerator.writeOrdersToFile();
         List<Order> orderList = OrdersGenerator.getOrdersFromFile();
 
         List<Limit> limitList = LimitUtils.loadLimits();
