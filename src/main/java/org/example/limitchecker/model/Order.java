@@ -55,25 +55,21 @@ public class Order implements Serializable {
         return side.equals(Side.BUY) ? lotCount : -(lotCount);
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", time=" + time +
-                ", user=" + user +
-                ", symbol='" + symbol + '\'' +
-                ", lotCount=" + lotCount +
-                ", side=" + side +
-                ", price=" + price +
-                '}';
+    public int getMoneyPositionChange() {
+        int sum = lotCount * price;
+        return side.equals(Side.BUY) ? sum : -(sum);
     }
 
-    public String getShortInfo() {
-        return "[" + user +
+    @Override
+    public String toString() {
+        return "{" + id +
+                ", " + time +
+                ", " + user +
                 ", " + symbol +
                 ", " + lotCount +
                 ", " + side +
                 ", " + price +
-                ']';
+                '}';
     }
+
 }

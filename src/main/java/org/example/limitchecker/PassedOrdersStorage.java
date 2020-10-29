@@ -46,4 +46,10 @@ public class PassedOrdersStorage {
                 .filter(order -> order.getSymbol().equals(symbol))
                 .count();
     }
+
+    public static int getUserMoneyPosition(User user) {
+        return getUserOrders(user)
+                .mapToInt(Order::getMoneyPositionChange)
+                .sum();
+    }
 }

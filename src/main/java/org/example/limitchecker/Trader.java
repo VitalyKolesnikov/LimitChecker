@@ -17,7 +17,7 @@ public class Trader implements Runnable {
 
     public void placeOrder(Order order) throws InterruptedException {
         queue.put(order);
-        System.out.println(Thread.currentThread().getName() + " placed order: " + order.getShortInfo());
+        System.out.println(Thread.currentThread().getName() + " placed order: " + order);
     }
 
     @Override

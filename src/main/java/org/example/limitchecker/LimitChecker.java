@@ -20,11 +20,11 @@ public class LimitChecker implements Runnable {
         Order order = queue.take();
         for (Limit limit : limits) {
             if (!limit.check(order)) {
-                System.out.println("Order " + order.getShortInfo() + " status: __REJECT__ (" + limit.getClass().getSimpleName() + " violation)");
+                System.out.println("Order " + order + " status: __REJECT__ (" + limit.getClass().getSimpleName() + " violation)");
                 return;
             }
         }
-        System.out.println("Order " + order.getShortInfo() + " status: __PASS__");
+        System.out.println("Order " + order + " status: __PASS__");
         PassedOrdersStorage.orderList.add(order);
     }
 
