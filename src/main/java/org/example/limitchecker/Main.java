@@ -2,11 +2,11 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
-import org.example.limitchecker.model.limit.*;
+import org.example.limitchecker.model.limit.Limit;
+import org.example.limitchecker.util.LimitUtils;
 import org.example.limitchecker.util.OrdersGenerator;
 import org.example.limitchecker.util.StockUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -17,19 +17,19 @@ public class Main {
 
         ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(500);
 
-        OrdersGenerator.writeToFile();
-        List<Order> orderList = OrdersGenerator.getFromFile();
+        OrdersGenerator.writeOrdersToFile();
+        List<Order> orderList = OrdersGenerator.getOrdersFromFile();
 
-        List<Limit> limitList = new ArrayList<>();
+        List<Limit> limitList = LimitUtils.loadLimits();
 
-        limitList.add(new LotsInOrderLimit(70));
-        limitList.add(new LotsInOrderPerUserLimit(30, User.MIKE));
-        limitList.add(new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"));
-        limitList.add(new StockPositionLimit(-150, 150));
-        limitList.add(new StockPositionPerUserLimit(-75, 75));
-        limitList.add(new UserOrdersLimit(65));
-        limitList.add(new UserOrdersPerStockLimit(2));
-        limitList.add(new UserMoneyPositionLimit(-5000, 5000));
+//        limitList.add(new LotsInOrderLimit(70));
+//        limitList.add(new LotsInOrderPerUserLimit(30, User.MIKE));
+//        limitList.add(new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"));
+//        limitList.add(new StockPositionLimit(-150, 150));
+//        limitList.add(new StockPositionPerUserLimit(-75, 75));
+//        limitList.add(new UserOrdersLimit(65));
+//        limitList.add(new UserOrdersPerStockLimit(2));
+//        limitList.add(new UserMoneyPositionLimit(-5000, 5000));
 
         Trader trader1 = new Trader(orderQueue, orderList.subList(0, orderList.size()/2));
         Trader trader2 = new Trader(orderQueue, orderList.subList(orderList.size()/2, orderList.size()));

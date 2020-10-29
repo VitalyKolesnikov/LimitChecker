@@ -21,10 +21,10 @@ public class OrdersGenerator {
 
     private static final int NUM = 1000;
     private static final Random RANDOM = new Random();
-    private static final String ORDERS = "src/main/resources/orders.ser";
+    private static final String ORDERS_PATH = "src/main/resources/orders.ser";
 
     public static void main(String[] args) {
-        writeToFile();
+        writeOrdersToFile();
     }
 
     public static List<Order> generate() {
@@ -43,9 +43,9 @@ public class OrdersGenerator {
         return result;
     }
 
-    public static void writeToFile() {
+    public static void writeOrdersToFile() {
         List<Order> list = generate();
-        try (FileOutputStream fos = new FileOutputStream(ORDERS);
+        try (FileOutputStream fos = new FileOutputStream(ORDERS_PATH);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             for (Order order : list) {
                 oos.writeObject(order);
@@ -55,9 +55,9 @@ public class OrdersGenerator {
         }
     }
 
-    public static List<Order> getFromFile() {
+    public static List<Order> getOrdersFromFile() {
         List<Order> result = new ArrayList<>();
-        try (FileInputStream file = new FileInputStream(ORDERS);
+        try (FileInputStream file = new FileInputStream(ORDERS_PATH);
              ObjectInputStream reader = new ObjectInputStream(file)) {
             while (true) {
                 try {

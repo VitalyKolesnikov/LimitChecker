@@ -1,0 +1,1 @@
+[{"symbol":"KIRK","user":"MIKE","maxLots":15},{"symbol":"TRIL","user":"ROBERT","maxLots":20}]

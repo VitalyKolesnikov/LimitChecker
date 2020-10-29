@@ -1,0 +1,1 @@
+[{"user":"MIKE","maxLots":30},{"user":"JOHN","maxLots":40}]

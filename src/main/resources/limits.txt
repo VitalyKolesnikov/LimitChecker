@@ -1,0 +1,3 @@
+LotsInOrderLimit,70
+LotsInOrderPerUserLimit,30,MIKE
+LotsInOrderPerUserPerSymbolLimit,15,MIKE,KIRK
