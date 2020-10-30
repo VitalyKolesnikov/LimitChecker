@@ -35,8 +35,8 @@ public class LimitUtils {
             String name = cls.getSimpleName();
             name = name.substring(0, name.length() - 2);
             try (final FileReader fileReader = new FileReader(LIMITS_PATH + name + ".json")) {
-                final Limit[] after = gson.fromJson(fileReader, cls);
-                result.addAll(Arrays.asList(after));
+                final Limit[] limitArr = gson.fromJson(fileReader, cls);
+                result.addAll(Arrays.asList(limitArr));
             } catch (IOException e) {
                 e.printStackTrace();
             }

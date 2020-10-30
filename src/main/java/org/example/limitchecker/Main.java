@@ -13,30 +13,28 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+
+    public static final int TRADERS_NUM = 10;
+    public static final int QUEUE_SIZE = 500;
+    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile();
+    public static List<Limit> limitList = LimitUtils.loadLimits();
+    public static ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+
     public static void main(String[] args) throws InterruptedException {
-
-        ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(500);
-
-        List<Order> orderList = OrdersGenerator.getOrdersFromFile();
-        List<Limit> limitList = LimitUtils.loadLimits();
-
-        Trader trader1 = new Trader(orderQueue, orderList.subList(0, orderList.size()/2));
-        Trader trader2 = new Trader(orderQueue, orderList.subList(orderList.size()/2, orderList.size()));
-
-        LimitChecker checker = new LimitChecker(orderQueue, limitList);
-
-        Thread trader1Thread = new Thread(trader1, "Trader1 thread");
-        Thread trader2Thread = new Thread(trader2, "Trader2 thread");
-
-        Thread checkerThread = new Thread(checker, "Checker thread");
 
         long startTime = System.nanoTime();
 
-        trader1Thread.start();
-        trader2Thread.start();
+        Trader trader;
+        int ordersPerTrader = orderList.size()/TRADERS_NUM;
 
-        Thread.sleep(10);
+        for (int i = 0; i < TRADERS_NUM; i++) {
+            int firstOrder = i * ordersPerTrader;
+            int lastOrder = (i + 1) * ordersPerTrader;
+            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder));
+            new Thread(trader, "Trader" + i).start();
+        }
 
+        Thread checkerThread = new Thread(new LimitChecker(orderQueue, limitList), "Checker");
         checkerThread.start();
         checkerThread.join();
 

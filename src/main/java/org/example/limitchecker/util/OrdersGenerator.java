@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OrdersGenerator {
 
-    private static final int NUM = 10_000;
+    private static final int ORDERS_NUM = 10_000;
     private static final Random RANDOM = new Random();
     private static final String ORDERS_PATH = "src/main/resources/orders.ser";
 
@@ -29,12 +29,12 @@ public class OrdersGenerator {
 
     public static List<Order> generate() {
         List<Order> result = new ArrayList<>();
-        for (int i = 1; i <= NUM; i++) {
+        for (int i = 1; i <= ORDERS_NUM; i++) {
             LocalTime time = LocalTime.now();
             User user = User.getRandom();
             Stock stock = StockUtils.getRandomStock();
             int lotCount = RANDOM.nextInt(100);
-            Side side = RANDOM.nextInt(10) > 5 ? Side.BUY : Side.SELL;
+            Side side = RANDOM.nextInt(10) > 4 ? Side.BUY : Side.SELL;
             double price = randomPriceChange(stock.getPrice(), side);
 
             Order order = new Order(i, time, user, stock, lotCount, side, price);
