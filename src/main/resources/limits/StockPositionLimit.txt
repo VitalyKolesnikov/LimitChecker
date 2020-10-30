@@ -1,1 +1,0 @@
-[{"minPosition":-150,"maxPosition":150}]

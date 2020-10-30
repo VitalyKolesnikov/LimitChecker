@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
 
-    <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>log/limitchecker.log</file>
+    <appender name="file-rolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/limitchecker.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>30MB</totalSizeCap>
+        </rollingPolicy>
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%date %-5level - %msg%n</pattern>
@@ -17,7 +22,7 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="file"/>
+        <appender-ref ref="file-rolling"/>
         <appender-ref ref="console"/>
     </root>
 </configuration>

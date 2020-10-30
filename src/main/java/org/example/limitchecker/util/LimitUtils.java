@@ -25,12 +25,16 @@ public class LimitUtils {
         classes.add(LotsInOrderLimit[].class);
         classes.add(LotsInOrderPerUserLimit[].class);
         classes.add(LotsInOrderPerUserPerSymbolLimit[].class);
-        classes.add(StockPositionLimit[].class);
+        classes.add(SymbolPositionLimit[].class);
+        classes.add(SymbolPositionPerUserLimit[].class);
+        classes.add(UserOrdersLimit[].class);
+        classes.add(UserOrdersPerSymbolLimit[].class);
+        classes.add(UserMoneyPositionLimit[].class);
 
         for (Class<? extends Limit[]> cls : classes) {
             String name = cls.getSimpleName();
             name = name.substring(0, name.length() - 2);
-            try (final FileReader fileReader = new FileReader(LIMITS_PATH + name + ".txt")) {
+            try (final FileReader fileReader = new FileReader(LIMITS_PATH + name + ".json")) {
                 final Limit[] after = gson.fromJson(fileReader, cls);
                 result.addAll(Arrays.asList(after));
             } catch (IOException e) {
@@ -46,7 +50,7 @@ public class LimitUtils {
         Gson gson = new Gson();
         File file;
 
-        file = new File(LIMITS_PATH + "LotsInOrderLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderLimit[] limitArr = {new LotsInOrderLimit(70)};
             gson.toJson(limitArr, fileWriter);
@@ -54,29 +58,99 @@ public class LimitUtils {
             e.printStackTrace();
         }
 
-        file = new File(LIMITS_PATH + "LotsInOrderPerUserLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderPerUserLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderPerUserLimit[] limitArr = {
                     new LotsInOrderPerUserLimit(30, User.MIKE),
-                    new LotsInOrderPerUserLimit(40, User.JOHN)};
+                    new LotsInOrderPerUserLimit(35, User.COREY),
+                    new LotsInOrderPerUserLimit(45, User.SARAH),
+                    new LotsInOrderPerUserLimit(40, User.JOHN)
+            };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        file = new File(LIMITS_PATH + "LotsInOrderPerUserPerSymbolLimit.txt");
+        file = new File(LIMITS_PATH + "LotsInOrderPerUserPerSymbolLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderPerUserPerSymbolLimit[] limitArr = {
                     new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"),
-                    new LotsInOrderPerUserPerSymbolLimit(20, User.ROBERT, "TRIL")};
+                    new LotsInOrderPerUserPerSymbolLimit(15, User.SAM, "TSLA"),
+                    new LotsInOrderPerUserPerSymbolLimit(15, User.CHARLIE, "ETSY"),
+                    new LotsInOrderPerUserPerSymbolLimit(15, User.BARBARA, "LAZY"),
+                    new LotsInOrderPerUserPerSymbolLimit(20, User.ROBERT, "TRIL")
+            };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        file = new File(LIMITS_PATH + "StockPositionLimit.txt");
+        file = new File(LIMITS_PATH + "SymbolPositionLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
-            final StockPositionLimit[] limitArr = {new StockPositionLimit(-150, 150)};
+            final SymbolPositionLimit[] limitArr = {
+                    new SymbolPositionLimit(-150, 150, "KIRK"),
+                    new SymbolPositionLimit(-120, 120, "PRPLW"),
+                    new SymbolPositionLimit(-130, 140, "ZM"),
+                    new SymbolPositionLimit(-100, 140, "FVRR"),
+                    new SymbolPositionLimit(-90, 90, "PRTS"),
+                    new SymbolPositionLimit(-115, 135, "NIO")
+            };
+            gson.toJson(limitArr, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(LIMITS_PATH + "SymbolPositionPerUserLimit.json");
+        try (final FileWriter fileWriter = new FileWriter(file)) {
+            final SymbolPositionPerUserLimit[] limitArr = {
+                    new SymbolPositionPerUserLimit(-75, 75, "TRIL", User.MIKE),
+                    new SymbolPositionPerUserLimit(-70, 70, "NLS", User.SAM),
+                    new SymbolPositionPerUserLimit(-80, 85, "TSLA", User.CHARLIE),
+                    new SymbolPositionPerUserLimit(-90, 100, "OSTK", User.BARBARA),
+                    new SymbolPositionPerUserLimit(-90, 110, "SE", User.ROBERT),
+                    new SymbolPositionPerUserLimit(-95, 90, "PTON", User.MICHELE)
+            };
+            gson.toJson(limitArr, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(LIMITS_PATH + "UserOrdersLimit.json");
+        try (final FileWriter fileWriter = new FileWriter(file)) {
+            final UserOrdersLimit[] limitArr = {
+                    new UserOrdersLimit(65, User.MIKE),
+                    new UserOrdersLimit(60, User.COREY),
+                    new UserOrdersLimit(75, User.SARAH),
+                    new UserOrdersLimit(55, User.JOHN)
+            };
+            gson.toJson(limitArr, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(LIMITS_PATH + "UserOrdersPerSymbolLimit.json");
+        try (final FileWriter fileWriter = new FileWriter(file)) {
+            final UserOrdersPerSymbolLimit[] limitArr = {
+                    new UserOrdersPerSymbolLimit(25, User.SAM, "SAVA"),
+                    new UserOrdersPerSymbolLimit(30, User.CHARLIE, "BNTX"),
+                    new UserOrdersPerSymbolLimit(15, User.BARBARA, "FUTU"),
+                    new UserOrdersPerSymbolLimit(33, User.ROBERT, "ZS")
+            };
+            gson.toJson(limitArr, fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(LIMITS_PATH + "UserMoneyPositionLimit.json");
+        try (final FileWriter fileWriter = new FileWriter(file)) {
+            final UserMoneyPositionLimit[] limitArr = {
+                    new UserMoneyPositionLimit(-5000, 5000, User.SAM),
+                    new UserMoneyPositionLimit(-4500, 4500, User.MIKE),
+                    new UserMoneyPositionLimit(-5500, 6000, User.JOHN),
+                    new UserMoneyPositionLimit(-7000, 7000, User.SARAH),
+                    new UserMoneyPositionLimit(-5800, 6200, User.ROBERT),
+                    new UserMoneyPositionLimit(-3500, 4900, User.BARBARA)
+            };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
             e.printStackTrace();

@@ -17,19 +17,8 @@ public class Main {
 
         ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(500);
 
-//        OrdersGenerator.writeOrdersToFile();
         List<Order> orderList = OrdersGenerator.getOrdersFromFile();
-
         List<Limit> limitList = LimitUtils.loadLimits();
-
-//        limitList.add(new LotsInOrderLimit(70));
-//        limitList.add(new LotsInOrderPerUserLimit(30, User.MIKE));
-//        limitList.add(new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"));
-//        limitList.add(new StockPositionLimit(-150, 150));
-//        limitList.add(new StockPositionPerUserLimit(-75, 75));
-//        limitList.add(new UserOrdersLimit(65));
-//        limitList.add(new UserOrdersPerStockLimit(2));
-//        limitList.add(new UserMoneyPositionLimit(-5000, 5000));
 
         Trader trader1 = new Trader(orderQueue, orderList.subList(0, orderList.size()/2));
         Trader trader2 = new Trader(orderQueue, orderList.subList(orderList.size()/2, orderList.size()));
@@ -57,8 +46,9 @@ public class Main {
         System.out.println("-----------Result stock positions----------");
         StockUtils.getStocks().forEach(e -> System.out.println(e.getSymbol() + ": " + PassedOrdersStorage.getStockPosition(e)));
 
-        System.out.println("-----------Result passed user orders count----------");
-        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getUserOrdersCount(e)));
+        System.out.println("-----------User result orders/money position----------");
+        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getUserOrdersCount(e) + " / " +
+                (int)PassedOrdersStorage.getUserMoneyPosition(e) + " $"));
 
         System.out.println("---------------------------------------");
         System.out.println("Time: " + total + " milliseconds");

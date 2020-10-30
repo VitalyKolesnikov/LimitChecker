@@ -18,7 +18,7 @@ public class StockUtils {
         try {
             for (String line : getFileContents(STOCKS)) {
                 String[] stockArr = line.split(",");
-                result.add(new Stock(stockArr[0], stockArr[1], Double.parseDouble(stockArr[5])));
+                result.add(new Stock(stockArr[0], Double.parseDouble(stockArr[5])));
             }
         } catch (IOException e) {
             e.printStackTrace();
