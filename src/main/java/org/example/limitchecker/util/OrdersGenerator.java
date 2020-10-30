@@ -21,7 +21,7 @@ public class OrdersGenerator {
 
     private static final int ORDERS_NUM = 10_000;
     private static final Random RANDOM = new Random();
-    private static final String ORDERS_PATH = "src/main/resources/orders.ser";
+    private static final String ORDERS_PATH = "src/main/resources/orders_100k.ser";
 
     public static void main(String[] args) {
         writeOrdersToFile();

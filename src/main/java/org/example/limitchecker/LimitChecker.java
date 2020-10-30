@@ -29,7 +29,10 @@ public class LimitChecker implements Runnable {
             }
         }
         log.info("Order {} status: __PASS__", order);
-        PassedOrdersStorage.orderList.add(order);
+        ProcessedOrdersStorage.getOrderList().add(order);
+        ProcessedOrdersStorage.getSymbolPositionStorage().merge(order.getStock().getSymbol(), order.getPositionChange(), (k, v) -> v += order.getPositionChange());
+        ProcessedOrdersStorage.getUserPassedOrdersCountStorage().merge(order.getUser(), 1, Integer::sum);
+        ProcessedOrdersStorage.getUserMoneyPositionStorage().merge(order.getUser(), order.getMoneyPositionChange(), (k, v) -> v += order.getMoneyPositionChange());
     }
 
     @Override

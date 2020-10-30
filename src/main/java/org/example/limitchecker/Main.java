@@ -42,14 +42,16 @@ public class Main {
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
         System.out.println("-----------Result stock positions----------");
-        StockUtils.getStocks().forEach(e -> System.out.println(e.getSymbol() + ": " + PassedOrdersStorage.getStockPosition(e)));
+        StockUtils.getStocks().forEach(e -> System.out.println(e.getSymbol() + ": " +
+                ProcessedOrdersStorage.getSymbolPosition(e.getSymbol())));
 
-        System.out.println("-----------User result orders/money position----------");
-        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " + PassedOrdersStorage.getUserOrdersCount(e) + " / " +
-                (int)PassedOrdersStorage.getUserMoneyPosition(e) + " $"));
+        System.out.println("-----------User passed orders / money position----------");
+        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " +
+                ProcessedOrdersStorage.getUserPassedOrdersCount(e) + " / " +
+                (int) ProcessedOrdersStorage.getUserMoneyPosition(e) + " $"));
 
         System.out.println("---------------------------------------");
         System.out.println("Time: " + total + " milliseconds");
-        System.out.println("Orders passed: " + PassedOrdersStorage.orderList.size() + "/" + orderList.size());
+        System.out.println("Orders passed: " + ProcessedOrdersStorage.getOrderList().size() + "/" + orderList.size());
     }
 }

@@ -61,10 +61,10 @@ public class LimitUtils {
         file = new File(LIMITS_PATH + "LotsInOrderPerUserLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderPerUserLimit[] limitArr = {
-                    new LotsInOrderPerUserLimit(30, User.MIKE),
-                    new LotsInOrderPerUserLimit(35, User.COREY),
-                    new LotsInOrderPerUserLimit(45, User.SARAH),
-                    new LotsInOrderPerUserLimit(40, User.JOHN)
+                    new LotsInOrderPerUserLimit(50, User.MIKE),
+                    new LotsInOrderPerUserLimit(45, User.COREY),
+                    new LotsInOrderPerUserLimit(55, User.SARAH),
+                    new LotsInOrderPerUserLimit(60, User.JOHN)
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -144,12 +144,12 @@ public class LimitUtils {
         file = new File(LIMITS_PATH + "UserMoneyPositionLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final UserMoneyPositionLimit[] limitArr = {
-                    new UserMoneyPositionLimit(-5000, 5000, User.SAM),
-                    new UserMoneyPositionLimit(-4500, 4500, User.MIKE),
-                    new UserMoneyPositionLimit(-5500, 6000, User.JOHN),
-                    new UserMoneyPositionLimit(-7000, 7000, User.SARAH),
-                    new UserMoneyPositionLimit(-5800, 6200, User.ROBERT),
-                    new UserMoneyPositionLimit(-3500, 4900, User.BARBARA)
+                    new UserMoneyPositionLimit(-90000, 90000, User.SAM),
+                    new UserMoneyPositionLimit(-100000, 100000, User.MIKE),
+                    new UserMoneyPositionLimit(-110000, 110000, User.JOHN),
+                    new UserMoneyPositionLimit(-115000, 115000, User.SARAH),
+                    new UserMoneyPositionLimit(-120000, 120000, User.ROBERT),
+                    new UserMoneyPositionLimit(-125000, 125000, User.BARBARA)
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
