@@ -1,16 +1,15 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProcessedOrdersStorage {
-    private static final List<Order> passedOrdersList = new ArrayList<>();
+//    private static final List<Order> passedOrdersList = new ArrayList<>();
+    private static final AtomicInteger passedOrdersCount = new AtomicInteger(0);
     private static final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
     private static final Map<User, Integer> userPassedOrdersCountStorage = new ConcurrentHashMap<>();
     private static final Map<User, Double> userMoneyPositionStorage = new ConcurrentHashMap<>();
@@ -31,8 +30,12 @@ public class ProcessedOrdersStorage {
         }
     }
 
-    public static List<Order> getPassedOrdersList() {
-        return passedOrdersList;
+//    public static List<Order> getPassedOrdersList() {
+//        return passedOrdersList;
+//    }
+
+    public static AtomicInteger getPassedOrdersCount() {
+        return passedOrdersCount;
     }
 
     public static Map<String, Integer> getSymbolPositionStorage() {
