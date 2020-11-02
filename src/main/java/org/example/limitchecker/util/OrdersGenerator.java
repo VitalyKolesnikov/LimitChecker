@@ -35,7 +35,7 @@ public class OrdersGenerator {
             Stock stock = StockUtils.getRandomStock();
             int lotCount = RANDOM.nextInt(100);
             Side side = RANDOM.nextInt(10) > 4 ? Side.BUY : Side.SELL;
-            double price = randomPriceChange(stock.getPrice(), side);
+            Double price = RANDOM.nextInt(10) > 8 ? null : randomPriceChange(stock.getPrice(), side);
 
             Order order = new Order(i, time, user, stock, lotCount, side, price);
             result.add(order);
@@ -63,6 +63,9 @@ public class OrdersGenerator {
             for (int i = 0; i < amount; i++) {
                 try {
                     Order order = (Order) reader.readObject();
+                    if (order.getPrice() == null) {
+                        order.setPrice(order.getStock().getPrice());
+                    }
                     result.add(order);
                 } catch (Exception ex) {
                     break;

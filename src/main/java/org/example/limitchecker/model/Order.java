@@ -11,7 +11,7 @@ public class Order implements Serializable {
     private final Stock stock;
     private final int lotCount;
     private final Side side;
-    private final Double price;
+    private Double price;
 
     public Order(int id, LocalTime time, User user, Stock stock, int lotCount, Side side, Double price) {
         this.id = id;
@@ -49,6 +49,10 @@ public class Order implements Serializable {
 
     public Double getPrice() {
         return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public int getPositionChange() {
