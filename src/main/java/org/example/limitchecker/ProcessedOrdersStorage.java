@@ -8,24 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProcessedOrdersStorage {
-//    private static final List<Order> passedOrdersList = new ArrayList<>();
+    //    private static final List<Order> passedOrdersList = new ArrayList<>();
     private static final AtomicInteger passedOrdersCount = new AtomicInteger(0);
     private static final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
     private static final Map<User, Integer> userPassedOrdersCountStorage = new ConcurrentHashMap<>();
     private static final Map<User, Double> userMoneyPositionStorage = new ConcurrentHashMap<>();
-
     private static final Map<User, HashMap<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
-
-    static {
-        for (User user : User.values()) {
-            ProcessedOrdersStorage.getSymbolPositionPerUserStorage().put(user, new HashMap<>());
-        }
-    }
-
     private static final Map<User, HashMap<String, Integer>> userOrdersPerSymbolStorage = new ConcurrentHashMap<>();
 
     static {
         for (User user : User.values()) {
+            ProcessedOrdersStorage.getSymbolPositionPerUserStorage().put(user, new HashMap<>());
             ProcessedOrdersStorage.getUserOrdersPerSymbolStorage().put(user, new HashMap<>());
         }
     }
