@@ -19,9 +19,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OrdersGenerator {
 
-    private static final int ORDERS_NUM = 10_000;
+    private static final int ORDERS_NUM = 1_000_000;
     private static final Random RANDOM = new Random();
-    private static final String ORDERS_PATH = "src/main/resources/orders_100k.ser";
+    private static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
 
     public static void main(String[] args) {
         writeOrdersToFile();
@@ -55,11 +55,12 @@ public class OrdersGenerator {
         }
     }
 
-    public static List<Order> getOrdersFromFile() {
+    public static List<Order> getOrdersFromFile(int amount) {
+        System.out.println("Loading orders from file...");
         List<Order> result = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(ORDERS_PATH);
              ObjectInputStream reader = new ObjectInputStream(file)) {
-            while (true) {
+            for (int i = 0; i < amount; i++) {
                 try {
                     Order order = (Order) reader.readObject();
                     result.add(order);

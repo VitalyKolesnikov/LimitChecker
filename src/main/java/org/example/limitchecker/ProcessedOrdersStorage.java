@@ -14,6 +14,7 @@ public class ProcessedOrdersStorage {
     private static final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
     private static final Map<User, Integer> userPassedOrdersCountStorage = new ConcurrentHashMap<>();
     private static final Map<User, Double> userMoneyPositionStorage = new ConcurrentHashMap<>();
+//    private static final Map<User, ConcurrentHashMap<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
 
     public static List<Order> getOrderList() {
         return orderList;
@@ -34,6 +35,10 @@ public class ProcessedOrdersStorage {
     public static Map<User, Double> getUserMoneyPositionStorage() {
         return userMoneyPositionStorage;
     }
+
+//    public static Map<User, ConcurrentHashMap<String, Integer>> getSymbolPositionPerUserStorage() {
+//        return symbolPositionPerUserStorage;
+//    }
 
     public static double getUserMoneyPosition(User user) {
         return userMoneyPositionStorage.getOrDefault(user, 0.0);
@@ -58,6 +63,10 @@ public class ProcessedOrdersStorage {
                 .mapToInt(Order::getPositionChange)
                 .sum();
     }
+
+//    public static int getSymbolPositionPerUser(String symbol, User user) {
+//        return symbolPositionPerUserStorage.get(user).getOrDefault(symbol, 0);
+//    }
 
     public static Stream<Order> getUserOrders(User user) {
         return orderList.stream()
