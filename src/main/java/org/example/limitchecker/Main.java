@@ -15,8 +15,9 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static final int TRADERS_NUM = 10;
+    public static final int CHECKERS_NUM = 5;
     public static final int QUEUE_SIZE = 500;
-    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000_000);
+    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(100_000);
     public static List<Limit> limitList = LimitUtils.loadLimits();
     public static ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
 
@@ -38,20 +39,12 @@ public class Main {
             new Thread(trader, "Trader" + i).start();
         }
 
-        Thread checkerThread1 = new Thread(new LimitChecker(orderQueue, limitList), "Checker1");
-        Thread checkerThread2 = new Thread(new LimitChecker(orderQueue, limitList), "Checker2");
-        Thread checkerThread3 = new Thread(new LimitChecker(orderQueue, limitList), "Checker3");
-        Thread checkerThread4 = new Thread(new LimitChecker(orderQueue, limitList), "Checker4");
-
-        checkerThread1.start();
-        checkerThread2.start();
-        checkerThread3.start();
-        checkerThread4.start();
-
-        checkerThread1.join();
-        checkerThread2.join();
-        checkerThread3.join();
-        checkerThread4.join();
+        Thread checkerThread;
+        for (int i = 0; i < CHECKERS_NUM; i++) {
+            checkerThread = new Thread(new LimitChecker(orderQueue, limitList), "Checker" + i);
+            checkerThread.start();
+            checkerThread.join();
+        }
 
         long endTime = System.nanoTime();
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
