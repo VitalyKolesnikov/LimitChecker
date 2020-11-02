@@ -25,10 +25,6 @@ public class Main {
 
         long startTime = System.nanoTime();
 
-//        for (User user : User.values()) {
-//            ProcessedOrdersStorage.getSymbolPositionPerUserStorage().put(user, new ConcurrentHashMap<>());
-//        }
-
         Trader trader;
         int ordersPerTrader = orderList.size()/TRADERS_NUM;
 
@@ -60,6 +56,6 @@ public class Main {
 
         System.out.println("---------------------------------------");
         System.out.println("Time: " + total + " milliseconds");
-        System.out.println("Orders passed: " + ProcessedOrdersStorage.getOrderList().size() + "/" + orderList.size());
+        System.out.println("Orders passed: " + ProcessedOrdersStorage.getPassedOrdersList().size() + "/" + orderList.size());
     }
 }

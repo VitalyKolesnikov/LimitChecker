@@ -4,20 +4,28 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 public class ProcessedOrdersStorage {
-    private static final List<Order> orderList = new ArrayList<>();
+    private static final List<Order> passedOrdersList = new ArrayList<>();
     private static final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
     private static final Map<User, Integer> userPassedOrdersCountStorage = new ConcurrentHashMap<>();
     private static final Map<User, Double> userMoneyPositionStorage = new ConcurrentHashMap<>();
-//    private static final Map<User, ConcurrentHashMap<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
 
-    public static List<Order> getOrderList() {
-        return orderList;
+    private static final Map<User, HashMap<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
+
+    static {
+        for (User user : User.values()) {
+            ProcessedOrdersStorage.getSymbolPositionPerUserStorage().put(user, new HashMap<>());
+        }
+    }
+
+    public static List<Order> getPassedOrdersList() {
+        return passedOrdersList;
     }
 
     public static Map<String, Integer> getSymbolPositionStorage() {
@@ -36,40 +44,40 @@ public class ProcessedOrdersStorage {
         return userMoneyPositionStorage;
     }
 
-//    public static Map<User, ConcurrentHashMap<String, Integer>> getSymbolPositionPerUserStorage() {
-//        return symbolPositionPerUserStorage;
-//    }
+    public static Map<User, HashMap<String, Integer>> getSymbolPositionPerUserStorage() {
+        return symbolPositionPerUserStorage;
+    }
 
     public static double getUserMoneyPosition(User user) {
         return userMoneyPositionStorage.getOrDefault(user, 0.0);
     }
 
-    public static Stream<Order> getOrdersBySymbol(String symbol) {
-        return orderList.stream()
-                .filter(order -> order.getStock().getSymbol().equals(symbol));
-    }
+//    public static Stream<Order> getOrdersBySymbol(String symbol) {
+//        return passedOrdersList.stream()
+//                .filter(order -> order.getStock().getSymbol().equals(symbol));
+//    }
 
-    public static Stream<Order> getOrdersBySymbolAndUser(String symbol, User user) {
-        return getOrdersBySymbol(symbol)
-                .filter(order -> order.getUser().equals(user));
-    }
+//    public static Stream<Order> getOrdersBySymbolAndUser(String symbol, User user) {
+//        return getOrdersBySymbol(symbol)
+//                .filter(order -> order.getUser().equals(user));
+//    }
 
     public static int getSymbolPosition(String symbol) {
         return symbolPositionStorage.getOrDefault(symbol, 0);
     }
 
-    public static int getSymbolPositionPerUser(String symbol, User user) {
-        return getOrdersBySymbolAndUser(symbol, user)
-                .mapToInt(Order::getPositionChange)
-                .sum();
-    }
-
 //    public static int getSymbolPositionPerUser(String symbol, User user) {
-//        return symbolPositionPerUserStorage.get(user).getOrDefault(symbol, 0);
+//        return getOrdersBySymbolAndUser(symbol, user)
+//                .mapToInt(Order::getPositionChange)
+//                .sum();
 //    }
 
+    public static int getSymbolPositionPerUser(String symbol, User user) {
+        return symbolPositionPerUserStorage.get(user).getOrDefault(symbol, 0);
+    }
+
     public static Stream<Order> getUserOrders(User user) {
-        return orderList.stream()
+        return passedOrdersList.stream()
                 .filter(order -> order.getUser().equals(user));
     }
 
