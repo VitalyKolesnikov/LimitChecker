@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 public class ProcessedOrdersStorage {
     private static final List<Order> passedOrdersList = new ArrayList<>();
@@ -21,6 +20,14 @@ public class ProcessedOrdersStorage {
     static {
         for (User user : User.values()) {
             ProcessedOrdersStorage.getSymbolPositionPerUserStorage().put(user, new HashMap<>());
+        }
+    }
+
+    private static final Map<User, HashMap<String, Integer>> userOrdersPerSymbolStorage = new ConcurrentHashMap<>();
+
+    static {
+        for (User user : User.values()) {
+            ProcessedOrdersStorage.getUserOrdersPerSymbolStorage().put(user, new HashMap<>());
         }
     }
 
@@ -46,6 +53,10 @@ public class ProcessedOrdersStorage {
 
     public static Map<User, HashMap<String, Integer>> getSymbolPositionPerUserStorage() {
         return symbolPositionPerUserStorage;
+    }
+
+    public static Map<User, HashMap<String, Integer>> getUserOrdersPerSymbolStorage() {
+        return userOrdersPerSymbolStorage;
     }
 
     public static double getUserMoneyPosition(User user) {
@@ -76,15 +87,19 @@ public class ProcessedOrdersStorage {
         return symbolPositionPerUserStorage.get(user).getOrDefault(symbol, 0);
     }
 
-    public static Stream<Order> getUserOrders(User user) {
-        return passedOrdersList.stream()
-                .filter(order -> order.getUser().equals(user));
-    }
+//    public static Stream<Order> getUserOrders(User user) {
+//        return passedOrdersList.stream()
+//                .filter(order -> order.getUser().equals(user));
+//    }
+
+//    public static int getUserOrdersPerSymbolCount(User user, String symbol) {
+//        return (int) getUserOrders(user)
+//                .filter(order -> order.getStock().getSymbol().equals(symbol))
+//                .count();
+//    }
 
     public static int getUserOrdersPerSymbolCount(User user, String symbol) {
-        return (int) getUserOrders(user)
-                .filter(order -> order.getStock().getSymbol().equals(symbol))
-                .count();
+        return userOrdersPerSymbolStorage.get(user).getOrDefault(symbol, 0);
     }
 
 }

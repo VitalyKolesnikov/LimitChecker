@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static final int TRADERS_NUM = 10;
-    public static final int CHECKERS_NUM = 5;
-    public static final int QUEUE_SIZE = 500;
-    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(100_000);
+    public static final int CHECKERS_NUM = 1;
+    public static final int QUEUE_SIZE = 10000;
+    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(1000_000);
     public static List<Limit> limitList = LimitUtils.loadLimits();
     public static ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
 

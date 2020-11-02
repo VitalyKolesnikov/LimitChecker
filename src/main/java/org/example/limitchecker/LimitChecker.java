@@ -35,6 +35,8 @@ public class LimitChecker implements Runnable {
         ProcessedOrdersStorage.getUserMoneyPositionStorage().merge(order.getUser(), order.getMoneyPositionChange(), (k, v) -> v += order.getMoneyPositionChange());
         ProcessedOrdersStorage.getSymbolPositionPerUserStorage().get(order.getUser())
                 .merge(order.getStock().getSymbol(), order.getPositionChange(), (k, v) -> v += order.getPositionChange());
+        ProcessedOrdersStorage.getUserOrdersPerSymbolStorage().get(order.getUser())
+                .merge(order.getStock().getSymbol(), 1, Integer::sum);
     }
 
     @Override
