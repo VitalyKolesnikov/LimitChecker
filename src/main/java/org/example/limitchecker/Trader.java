@@ -5,16 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Trader implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Trader.class);
 
-    private final ArrayBlockingQueue<Order> queue;
+    private final BlockingQueue<Order> queue;
     private final List<Order> orderList;
 
-    public Trader(ArrayBlockingQueue<Order> queue, List<Order> orderList) {
+    public Trader(BlockingQueue<Order> queue, List<Order> orderList) {
         this.queue = queue;
         this.orderList = orderList;
     }

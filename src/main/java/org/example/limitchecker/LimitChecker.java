@@ -6,16 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class LimitChecker implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
 
-    private final ArrayBlockingQueue<Order> queue;
+    private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
 
-    public LimitChecker(ArrayBlockingQueue<Order> queue, List<Limit> limits) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits) {
         this.queue = queue;
         this.limits = limits;
     }

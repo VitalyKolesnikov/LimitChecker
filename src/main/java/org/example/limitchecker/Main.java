@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -21,9 +22,9 @@ public class Main {
     public static final int TRADERS_NUM = 10;
     public static final int CHECKERS_NUM = 1;
     public static final int QUEUE_SIZE = 10000;
-    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000_000);
+    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000);
     public static List<Limit> limitList = LimitUtils.loadLimits();
-    public static ArrayBlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+    public static BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
 
     public static void main(String[] args) throws InterruptedException {
 
