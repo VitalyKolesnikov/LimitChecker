@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -22,8 +21,8 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static final int TRADERS_NUM = 10;
-    public static final int CHECKERS_NUM = 1;
-    public static final int QUEUE_SIZE = 10;
+    public static final int CHECKERS_NUM = 10;
+    public static final int QUEUE_SIZE = 5000;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -32,30 +31,40 @@ public class Main {
         BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         ProcessedOrdersStorage storage = new ProcessedOrdersStorage();
 
-        CountDownLatch latch = new CountDownLatch(TRADERS_NUM);
+//        CountDownLatch latch = new CountDownLatch(TRADERS_NUM);
 
         long startTime = System.nanoTime();
 
         Trader trader;
-        int ordersPerTrader = orderList.size()/TRADERS_NUM;
-
-        for (int i = 0; i < TRADERS_NUM; i++) {
-            int firstOrder = i * ordersPerTrader;
-            int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder), latch);
-            new Thread(trader, "Trader" + i).start();
-        }
+        int ordersPerTrader = orderList.size() / TRADERS_NUM;
 
         Thread checkerThread;
         for (int i = 0; i < CHECKERS_NUM; i++) {
-            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage, latch), "Checker" + i);
+            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage), "Checker" + i);
+            checkerThread.setDaemon(true);
             checkerThread.start();
-            checkerThread.join();
+//            checkerThread.join();
         }
+
+        Thread traderThread;
+        for (int i = 0; i < TRADERS_NUM; i++) {
+            int firstOrder = i * ordersPerTrader;
+            int lastOrder = (i + 1) * ordersPerTrader;
+            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder));
+            traderThread = new Thread(trader, "Trader" + i);
+            traderThread.start();
+            traderThread.join();
+        }
+
+//        latch.await();
 
         long endTime = System.nanoTime();
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
+        Thread.sleep(100);
+
+        log.info("---------------------------");
+        log.info("All orders has been checked");
         log.info("-----------Result stock positions----------");
         StockUtils.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), storage.getSymbolPosition(e.getSymbol())
         ));

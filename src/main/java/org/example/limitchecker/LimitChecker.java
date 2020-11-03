@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 
 public class LimitChecker implements Runnable {
 
@@ -17,37 +16,36 @@ public class LimitChecker implements Runnable {
     private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
     private final ProcessedOrdersStorage storage;
-    private final CountDownLatch latch;
+//    private final CountDownLatch latch;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage, CountDownLatch latch) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage) {
         this.queue = queue;
         this.limits = limits;
         this.storage = storage;
-        this.latch = latch;
     }
 
     public void checkOrder() throws InterruptedException {
         Order order = queue.take();
         for (Limit limit : limits) {
             if (!limit.check(order, storage)) {
-                log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
+                log.info("Order {} status: __REJECT__ ({} violation) - {}", order, limit.getClass().getSimpleName(), Thread.currentThread().getName());
                 return;
             }
         }
-        log.info("Order {} status: __PASS__", order);
+        log.info("Order {} status: __PASS__ - {}", order, Thread.currentThread().getName());
         storage.addOrder(order);
     }
 
     @Override
     public void run() {
-        while (!queue.isEmpty() || latch.getCount() != 0) {
+        while (true) {
             try {
                 checkOrder();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        log.info("---------------------------");
-        log.info("All orders has been checked");
+//        log.info("---------------------------");
+//        log.info("All orders has been checked");
     }
 }
