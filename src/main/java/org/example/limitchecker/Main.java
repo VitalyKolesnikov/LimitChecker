@@ -3,6 +3,7 @@ package org.example.limitchecker;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 import org.example.limitchecker.model.limit.Limit;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 import org.example.limitchecker.util.LimitUtils;
 import org.example.limitchecker.util.OrdersGenerator;
 import org.example.limitchecker.util.StockUtils;
@@ -22,11 +23,13 @@ public class Main {
     public static final int TRADERS_NUM = 10;
     public static final int CHECKERS_NUM = 1;
     public static final int QUEUE_SIZE = 10000;
-    public static List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000);
-    public static List<Limit> limitList = LimitUtils.loadLimits();
-    public static BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
 
     public static void main(String[] args) throws InterruptedException {
+
+        List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000);
+        List<Limit> limitList = LimitUtils.loadLimits();
+        BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        ProcessedOrdersStorage storage = new ProcessedOrdersStorage();
 
         long startTime = System.nanoTime();
 
@@ -42,7 +45,7 @@ public class Main {
 
         Thread checkerThread;
         for (int i = 0; i < CHECKERS_NUM; i++) {
-            checkerThread = new Thread(new LimitChecker(orderQueue, limitList), "Checker" + i);
+            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage), "Checker" + i);
             checkerThread.start();
             checkerThread.join();
         }
@@ -51,15 +54,15 @@ public class Main {
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
         log.info("-----------Result stock positions----------");
-        StockUtils.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), ProcessedOrdersStorage.getSymbolPosition(e.getSymbol())
+        StockUtils.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), storage.getSymbolPosition(e.getSymbol())
         ));
 
         log.info("-----------User passed orders / money position----------");
         Arrays.stream(User.values()).forEach(e ->
-                log.info("{}: {} / {} $", e, ProcessedOrdersStorage.getUserPassedOrdersCount(e), (int) ProcessedOrdersStorage.getUserMoneyPosition(e)));
+                log.info("{}: {} / {} $", e, storage.getUserPassedOrdersCount(e), (int) storage.getUserMoneyPosition(e)));
 
         log.info("---------------------------------------");
         log.info("Time: {} milliseconds", total);
-        log.info("Orders passed: {}/{}", ProcessedOrdersStorage.getPassedOrdersCount(), orderList.size());
+        log.info("Orders passed: {}/{}", storage.getPassedOrdersCount(), orderList.size());
     }
 }

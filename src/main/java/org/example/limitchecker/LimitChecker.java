@@ -2,6 +2,7 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,30 +15,24 @@ public class LimitChecker implements Runnable {
 
     private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
+    private final ProcessedOrdersStorage storage;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage) {
         this.queue = queue;
         this.limits = limits;
+        this.storage = storage;
     }
 
     public void checkOrder() throws InterruptedException {
         Order order = queue.take();
         for (Limit limit : limits) {
-            if (!limit.check(order)) {
+            if (!limit.check(order, storage)) {
                 log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
                 return;
             }
         }
         log.info("Order {} status: __PASS__", order);
-//        ProcessedOrdersStorage.getPassedOrdersList().add(order);
-        ProcessedOrdersStorage.getPassedOrdersCount().incrementAndGet();
-        ProcessedOrdersStorage.getSymbolPositionStorage().merge(order.getStock().getSymbol(), order.getPositionChange(), (k, v) -> v += order.getPositionChange());
-        ProcessedOrdersStorage.getUserPassedOrdersCountStorage().merge(order.getUser(), 1, Integer::sum);
-        ProcessedOrdersStorage.getUserMoneyPositionStorage().merge(order.getUser(), order.getMoneyPositionChange(), (k, v) -> v += order.getMoneyPositionChange());
-        ProcessedOrdersStorage.getSymbolPositionPerUserStorage().get(order.getUser())
-                .merge(order.getStock().getSymbol(), order.getPositionChange(), (k, v) -> v += order.getPositionChange());
-        ProcessedOrdersStorage.getUserOrdersPerSymbolStorage().get(order.getUser())
-                .merge(order.getStock().getSymbol(), 1, Integer::sum);
+        storage.addOrder(order);
     }
 
     @Override

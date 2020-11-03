@@ -1,6 +1,6 @@
 package org.example.limitchecker.model.limit;
 
-import org.example.limitchecker.ProcessedOrdersStorage;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 
@@ -16,9 +16,9 @@ public class UserMoneyPositionLimit implements Limit {
     }
 
     @Override
-    public boolean check(Order order) {
+    public boolean check(Order order, ProcessedOrdersStorage storage) {
         if (!order.getUser().equals(user)) return true;
-        double potentialPosition = ProcessedOrdersStorage.getUserMoneyPosition(order.getUser()) + order.getMoneyPositionChange();
+        double potentialPosition = storage.getUserMoneyPosition(order.getUser()) + storage.computeMoneyPositionChange(order);
         if (potentialPosition < minPosition) return false;
         return potentialPosition <= maxPosition;
     }

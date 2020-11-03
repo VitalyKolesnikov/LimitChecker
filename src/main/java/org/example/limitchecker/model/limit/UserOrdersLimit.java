@@ -1,6 +1,6 @@
 package org.example.limitchecker.model.limit;
 
-import org.example.limitchecker.ProcessedOrdersStorage;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 
@@ -15,8 +15,8 @@ public class UserOrdersLimit implements Limit {
     }
 
     @Override
-    public boolean check(Order order) {
+    public boolean check(Order order, ProcessedOrdersStorage storage) {
         if (!order.getUser().equals(user)) return true;
-        return ProcessedOrdersStorage.getUserPassedOrdersCount(order.getUser()) < maxOrders;
+        return storage.getUserPassedOrdersCount(order.getUser()) < maxOrders;
     }
 }

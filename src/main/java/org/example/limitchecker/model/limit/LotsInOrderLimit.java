@@ -1,6 +1,7 @@
 package org.example.limitchecker.model.limit;
 
 import org.example.limitchecker.model.Order;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 
 public class LotsInOrderLimit implements Limit {
 
@@ -11,7 +12,7 @@ public class LotsInOrderLimit implements Limit {
     }
 
     @Override
-    public boolean check(Order order) {
+    public boolean check(Order order, ProcessedOrdersStorage storage) {
         return order.getLotCount() <= maxLots;
     }
 }

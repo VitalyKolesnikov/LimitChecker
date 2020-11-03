@@ -1,6 +1,6 @@
 package org.example.limitchecker.model.limit;
 
-import org.example.limitchecker.ProcessedOrdersStorage;
+import org.example.limitchecker.repository.ProcessedOrdersStorage;
 import org.example.limitchecker.model.Order;
 
 public class SymbolPositionLimit implements Limit {
@@ -16,9 +16,9 @@ public class SymbolPositionLimit implements Limit {
     }
 
     @Override
-    public boolean check(Order order) {
+    public boolean check(Order order, ProcessedOrdersStorage storage) {
         if (!order.getStock().getSymbol().equals(symbol)) return true;
-        int potentialPosition = ProcessedOrdersStorage.getSymbolPosition(order.getStock().getSymbol()) + order.getPositionChange();
+        int potentialPosition = storage.getSymbolPosition(order.getStock().getSymbol()) + storage.computePositionChange(order);
         if (potentialPosition < minPosition) return false;
         return potentialPosition <= maxPosition;
     }
