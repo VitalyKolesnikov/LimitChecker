@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 
 public class LimitChecker implements Runnable {
 
@@ -16,11 +17,13 @@ public class LimitChecker implements Runnable {
     private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
     private final ProcessedOrdersStorage storage;
+    private final CountDownLatch latch;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage, CountDownLatch latch) {
         this.queue = queue;
         this.limits = limits;
         this.storage = storage;
+        this.latch = latch;
     }
 
     public void checkOrder() throws InterruptedException {
@@ -37,7 +40,7 @@ public class LimitChecker implements Runnable {
 
     @Override
     public void run() {
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty() || latch.getCount() != 0) {
             try {
                 checkOrder();
             } catch (InterruptedException e) {

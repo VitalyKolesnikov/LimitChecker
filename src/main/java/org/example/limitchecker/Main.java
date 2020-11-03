@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -22,14 +23,16 @@ public class Main {
 
     public static final int TRADERS_NUM = 10;
     public static final int CHECKERS_NUM = 1;
-    public static final int QUEUE_SIZE = 10000;
+    public static final int QUEUE_SIZE = 10;
 
     public static void main(String[] args) throws InterruptedException {
 
-        List<Order> orderList = OrdersGenerator.getOrdersFromFile(1_000);
+        List<Order> orderList = OrdersGenerator.getOrdersFromFile(100_000);
         List<Limit> limitList = LimitUtils.loadLimits();
         BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         ProcessedOrdersStorage storage = new ProcessedOrdersStorage();
+
+        CountDownLatch latch = new CountDownLatch(TRADERS_NUM);
 
         long startTime = System.nanoTime();
 
@@ -39,13 +42,13 @@ public class Main {
         for (int i = 0; i < TRADERS_NUM; i++) {
             int firstOrder = i * ordersPerTrader;
             int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder));
+            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder), latch);
             new Thread(trader, "Trader" + i).start();
         }
 
         Thread checkerThread;
         for (int i = 0; i < CHECKERS_NUM; i++) {
-            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage), "Checker" + i);
+            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage, latch), "Checker" + i);
             checkerThread.start();
             checkerThread.join();
         }

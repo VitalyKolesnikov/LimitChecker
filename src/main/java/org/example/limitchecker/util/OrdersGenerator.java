@@ -23,7 +23,7 @@ public class OrdersGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(OrdersGenerator.class);
 
-    private static final int ORDERS_NUM = 1_000;
+    private static final int ORDERS_NUM = 1_000_000;
     private static final Random RANDOM = new Random();
     private static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
 
