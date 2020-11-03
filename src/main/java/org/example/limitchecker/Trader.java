@@ -1,11 +1,15 @@
 package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Trader implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(Trader.class);
 
     private final ArrayBlockingQueue<Order> queue;
     private final List<Order> orderList;
@@ -17,7 +21,7 @@ public class Trader implements Runnable {
 
     public void placeOrder(Order order) throws InterruptedException {
         queue.put(order);
-        System.out.println(Thread.currentThread().getName() + " placed order: " + order);
+        log.info("{} placed order: {}", Thread.currentThread().getName(), order);
     }
 
     @Override
@@ -29,6 +33,6 @@ public class Trader implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println(Thread.currentThread().getName() + " has placed all orders");
+        log.info("{} has placed all orders", Thread.currentThread().getName());
     }
 }

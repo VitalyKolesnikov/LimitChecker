@@ -4,6 +4,8 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.Stock;
 import org.example.limitchecker.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,6 +20,8 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class OrdersGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(OrdersGenerator.class);
 
     private static final int ORDERS_NUM = 1_000_000;
     private static final Random RANDOM = new Random();
@@ -56,7 +60,7 @@ public class OrdersGenerator {
     }
 
     public static List<Order> getOrdersFromFile(int amount) {
-        System.out.println("Loading orders from file...");
+        log.info("Loading orders from file...");
         List<Order> result = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(ORDERS_PATH);
              ObjectInputStream reader = new ObjectInputStream(file)) {

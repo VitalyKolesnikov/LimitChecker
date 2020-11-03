@@ -10,7 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class LimitChecker implements Runnable {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
 
     private final ArrayBlockingQueue<Order> queue;
     private final List<Limit> limits;
@@ -49,7 +49,7 @@ public class LimitChecker implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("---------------------------");
-        System.out.println("All orders has been checked");
+        log.info("---------------------------");
+        log.info("All orders has been checked");
     }
 }

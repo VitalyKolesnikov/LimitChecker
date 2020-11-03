@@ -6,6 +6,8 @@ import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.util.LimitUtils;
 import org.example.limitchecker.util.OrdersGenerator;
 import org.example.limitchecker.util.StockUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static final int TRADERS_NUM = 10;
     public static final int CHECKERS_NUM = 1;
@@ -45,17 +49,16 @@ public class Main {
         long endTime = System.nanoTime();
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
-        System.out.println("-----------Result stock positions----------");
-        StockUtils.getStocks().forEach(e -> System.out.println(e.getSymbol() + ": " +
-                ProcessedOrdersStorage.getSymbolPosition(e.getSymbol())));
+        log.info("-----------Result stock positions----------");
+        StockUtils.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), ProcessedOrdersStorage.getSymbolPosition(e.getSymbol())
+        ));
 
-        System.out.println("-----------User passed orders / money position----------");
-        Arrays.stream(User.values()).forEach(e -> System.out.println(e + ": " +
-                ProcessedOrdersStorage.getUserPassedOrdersCount(e) + " / " +
-                (int) ProcessedOrdersStorage.getUserMoneyPosition(e) + " $"));
+        log.info("-----------User passed orders / money position----------");
+        Arrays.stream(User.values()).forEach(e ->
+                log.info("{}: {} / {} $", e, ProcessedOrdersStorage.getUserPassedOrdersCount(e), (int) ProcessedOrdersStorage.getUserMoneyPosition(e)));
 
-        System.out.println("---------------------------------------");
-        System.out.println("Time: " + total + " milliseconds");
-        System.out.println("Orders passed: " + ProcessedOrdersStorage.getPassedOrdersCount() + "/" + orderList.size());
+        log.info("---------------------------------------");
+        log.info("Time: {} milliseconds", total);
+        log.info("Orders passed: {}/{}", ProcessedOrdersStorage.getPassedOrdersCount(), orderList.size());
     }
 }
