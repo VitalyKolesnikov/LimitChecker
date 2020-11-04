@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ProcessedOrdersStorage {
+public class CheckedOrdersStorage {
 
     private final AtomicInteger passedOrdersCount = new AtomicInteger(0);
     private final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();

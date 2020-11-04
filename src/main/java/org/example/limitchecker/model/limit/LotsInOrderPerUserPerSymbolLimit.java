@@ -2,7 +2,7 @@ package org.example.limitchecker.model.limit;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
-import org.example.limitchecker.repository.ProcessedOrdersStorage;
+import org.example.limitchecker.repository.CheckedOrdersStorage;
 
 public class LotsInOrderPerUserPerSymbolLimit extends LotsInOrderPerUserLimit{
 
@@ -14,7 +14,7 @@ public class LotsInOrderPerUserPerSymbolLimit extends LotsInOrderPerUserLimit{
     }
 
     @Override
-    public boolean check(Order order, ProcessedOrdersStorage storage) {
+    public boolean check(Order order, CheckedOrdersStorage storage) {
         if (!order.getUser().equals(user) || !order.getStock().getSymbol().equals(symbol)) return true;
         return order.getLotCount() <= maxLots;
     }

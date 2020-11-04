@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LimitUtils {
+public class LimitLoader {
 
     private static final String LIMITS_PATH = "src/main/resources/limits/";
 
-    public static List<Limit> loadLimits() {
+    public List<Limit> loadLimits() {
 
         List<Limit> result = new ArrayList<>();
         Gson gson = new Gson();

@@ -2,12 +2,13 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
-import org.example.limitchecker.repository.ProcessedOrdersStorage;
+import org.example.limitchecker.repository.CheckedOrdersStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LimitChecker implements Runnable {
 
@@ -15,13 +16,14 @@ public class LimitChecker implements Runnable {
 
     private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
-    private final ProcessedOrdersStorage storage;
-//    private final CountDownLatch latch;
+    private final CheckedOrdersStorage storage;
+    private final AtomicInteger workingTraders;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, ProcessedOrdersStorage storage) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger workingTraders) {
         this.queue = queue;
         this.limits = limits;
         this.storage = storage;
+        this.workingTraders = workingTraders;
     }
 
     public void checkOrder() throws InterruptedException {
@@ -38,14 +40,12 @@ public class LimitChecker implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (workingTraders.get() != 0 || !queue.isEmpty()) {
             try {
                 checkOrder();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-//        log.info("---------------------------");
-//        log.info("All orders has been checked");
     }
 }

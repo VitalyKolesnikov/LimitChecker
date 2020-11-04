@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Trader implements Runnable {
 
@@ -13,11 +14,12 @@ public class Trader implements Runnable {
 
     private final BlockingQueue<Order> queue;
     private final List<Order> orderList;
-//    private final CountDownLatch latch;
+    private final AtomicInteger workingTraders;
 
-    public Trader(BlockingQueue<Order> queue, List<Order> orderList) {
+    public Trader(BlockingQueue<Order> queue, List<Order> orderList, AtomicInteger workingTraders) {
         this.queue = queue;
         this.orderList = orderList;
+        this.workingTraders = workingTraders;
     }
 
     public void placeOrder(Order order) throws InterruptedException {
@@ -35,6 +37,6 @@ public class Trader implements Runnable {
             }
         }
         log.info("{} has placed all orders", Thread.currentThread().getName());
-//        latch.countDown();
+        workingTraders.decrementAndGet();
     }
 }
