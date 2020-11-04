@@ -1,5 +1,6 @@
 package org.example.limitchecker;
 
+import org.example.limitchecker.exception.NoLimitsException;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
@@ -21,6 +22,9 @@ public class LimitChecker implements Runnable {
 
     public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger workingTraders) {
         this.queue = queue;
+        if (limits.isEmpty()) {
+            throw new NoLimitsException();
+        }
         this.limits = limits;
         this.storage = storage;
         this.workingTraders = workingTraders;

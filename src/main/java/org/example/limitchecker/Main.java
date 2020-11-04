@@ -3,8 +3,8 @@ package org.example.limitchecker;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.User;
 import org.example.limitchecker.model.limit.Limit;
-import org.example.limitchecker.repository.Database;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
+import org.example.limitchecker.repository.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 100_000;
+    public static final int ORDERS_NUM = 10_000;
     public static final int TRADERS_NUM = 50;
     public static final int CHECKERS_NUM = 5;
     public static final int QUEUE_SIZE = 5000;
