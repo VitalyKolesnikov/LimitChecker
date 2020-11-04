@@ -19,7 +19,7 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 1_000_000;
+    public static final int ORDERS_NUM = 100_000;
     public static final int TRADERS_NUM = 50;
     public static final int CHECKERS_NUM = 5;
     public static final int QUEUE_SIZE = 5000;
@@ -42,7 +42,7 @@ public class Main {
         for (int i = 0; i < TRADERS_NUM; i++) {
             int firstOrder = i * ordersPerTrader;
             int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(orderQueue, orderList.subList(firstOrder, lastOrder), activeTraders);
+            trader = new Trader(new QueueProxy<>(orderQueue), orderList.subList(firstOrder, lastOrder), activeTraders);
             traderThread = new Thread(trader, "Trader" + i);
             traderThread.start();
         }

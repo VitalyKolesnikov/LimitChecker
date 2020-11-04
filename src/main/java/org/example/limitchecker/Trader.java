@@ -5,25 +5,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Trader implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Trader.class);
 
-    private final BlockingQueue<Order> queue;
+    private final QueueProxy<Order> queue;
     private final List<Order> orderList;
     private final AtomicInteger workingTraders;
 
-    public Trader(BlockingQueue<Order> queue, List<Order> orderList, AtomicInteger workingTraders) {
+    public Trader(QueueProxy<Order> queue, List<Order> orderList, AtomicInteger workingTraders) {
         this.queue = queue;
         this.orderList = orderList;
         this.workingTraders = workingTraders;
     }
 
     public void placeOrder(Order order) throws InterruptedException {
-        queue.put(order);
+        queue.putOrder(order);
         log.info("{} placed order: {}", Thread.currentThread().getName(), order);
     }
 
