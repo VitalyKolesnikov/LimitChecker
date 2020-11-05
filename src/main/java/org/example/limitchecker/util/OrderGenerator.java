@@ -7,6 +7,7 @@ import org.example.limitchecker.model.User;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalTime;
@@ -21,14 +22,16 @@ public class OrderGenerator {
     private static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
 
     public static void main(String[] args) {
-        writeOrdersToFile();
+        OrderGenerator generator = new OrderGenerator();
+        List<Order> orderList = generator.generate(ORDERS_NUM);
+        generator.writeToFile(orderList, ORDERS_PATH);
     }
 
-    public static List<Order> generate() {
+    public List<Order> generate(int amount) {
         List<Order> result = new ArrayList<>();
         StockLoader stockLoader = new StockLoader();
         Random random = new Random();
-        for (int i = 1; i <= ORDERS_NUM; i++) {
+        for (int i = 1; i <= amount; i++) {
             LocalTime time = LocalTime.now();
             User user = User.getRandom();
             Stock stock = stockLoader.getRandomStock();
@@ -42,19 +45,18 @@ public class OrderGenerator {
         return result;
     }
 
-    public static void writeOrdersToFile() {
-        List<Order> list = generate();
-        try (FileOutputStream fos = new FileOutputStream(ORDERS_PATH);
+    public void writeToFile(List<? extends Serializable> list, String path) {
+        try (FileOutputStream fos = new FileOutputStream(path);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-            for (Order order : list) {
-                oos.writeObject(order);
+            for (Serializable element : list) {
+                oos.writeObject(element);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static double randomPriceChange(double price, Side side) {
+    public double randomPriceChange(double price, Side side) {
         double random = ThreadLocalRandom.current().nextDouble(0.001, 0.01);
         double newPrice = side.equals(Side.BUY) ? price - price * random : price + price * random;
         BigDecimal bd = new BigDecimal(Double.toString(newPrice)).setScale(2, RoundingMode.HALF_UP);

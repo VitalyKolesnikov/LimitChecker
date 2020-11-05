@@ -19,7 +19,7 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 10_000;
+    public static final int ORDERS_NUM = 1_000_000;
     public static final int TRADERS_NUM = 50;
     public static final int CHECKERS_NUM = 5;
     public static final int QUEUE_SIZE = 5000;

@@ -5,7 +5,6 @@ import java.util.concurrent.BlockingQueue;
 public class QueueProxy<T> {
     private final BlockingQueue<T> queue;
 
-
     public QueueProxy(BlockingQueue<T> queue) {
         this.queue = queue;
     }
