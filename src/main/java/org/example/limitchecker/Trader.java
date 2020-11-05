@@ -13,16 +13,16 @@ public class Trader implements Runnable {
 
     private final QueueProxy<Order> queue;
     private final List<Order> orderList;
-    private final AtomicInteger workingTraders;
+    private final AtomicInteger activeTraders;
 
-    public Trader(QueueProxy<Order> queue, List<Order> orderList, AtomicInteger workingTraders) {
+    public Trader(QueueProxy<Order> queue, List<Order> orderList, AtomicInteger activeTraders) {
         this.queue = queue;
         this.orderList = orderList;
-        this.workingTraders = workingTraders;
+        this.activeTraders = activeTraders;
     }
 
     public void placeOrder(Order order) throws InterruptedException {
-        queue.putOrder(order);
+        queue.put(order);
         log.info("{} placed order: {}", Thread.currentThread().getName(), order);
     }
 
@@ -36,6 +36,6 @@ public class Trader implements Runnable {
             }
         }
         log.info("{} has placed all orders", Thread.currentThread().getName());
-        workingTraders.decrementAndGet();
+        activeTraders.decrementAndGet();
     }
 }

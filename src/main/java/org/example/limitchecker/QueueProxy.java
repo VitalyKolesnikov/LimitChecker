@@ -10,7 +10,7 @@ public class QueueProxy<T> {
         this.queue = queue;
     }
 
-    public void putOrder(T element) throws InterruptedException {
+    public void put(T element) throws InterruptedException {
         queue.put(element);
     }
 }

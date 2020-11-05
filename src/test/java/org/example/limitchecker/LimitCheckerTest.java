@@ -36,7 +36,7 @@ class LimitCheckerTest {
     }
 
     @Test
-    void createWithNoLimits() {
+    void createWithEmptyLimitList() {
         assertThrows(NoLimitsException.class, () -> new LimitChecker(orderQueue, new ArrayList<>(), storage, workingTraders));
     }
 
@@ -52,7 +52,7 @@ class LimitCheckerTest {
     void addPassedOrderToStorage() throws InterruptedException {
         orderQueue.put(ORDER1);
         checker.checkOrder();
-        assertEquals(1, storage.getPassedOrdersCount().get());
+        assertEquals(1, storage.getPassedOrdersCount());
     }
 
 }

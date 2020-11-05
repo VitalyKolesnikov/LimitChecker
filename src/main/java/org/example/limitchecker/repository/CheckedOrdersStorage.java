@@ -20,18 +20,18 @@ public class CheckedOrdersStorage {
 
     {
         for (User user : User.values()) {
-            getSymbolPositionPerUserStorage().put(user, new HashMap<>());
-            getUserOrdersPerSymbolStorage().put(user, new HashMap<>());
+            symbolPositionPerUserStorage.put(user, new HashMap<>());
+            userOrdersPerSymbolStorage.put(user, new HashMap<>());
         }
     }
 
     public void addOrder(Order order) {
         passedOrdersCount.incrementAndGet();
-        symbolPositionStorage.merge(order.getStock().getSymbol(), computePositionChange(order), (k, v) -> v += computePositionChange(order));
+        symbolPositionStorage.merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
         userPassedOrdersCountStorage.merge(order.getUser(), 1, Integer::sum);
-        userMoneyPositionStorage.merge(order.getUser(), computeMoneyPositionChange(order), (k, v) -> v += computeMoneyPositionChange(order));
+        userMoneyPositionStorage.merge(order.getUser(), computeMoneyPositionChange(order), Double::sum);
         symbolPositionPerUserStorage.get(order.getUser())
-                .merge(order.getStock().getSymbol(), computePositionChange(order), (k, v) -> v += computePositionChange(order));
+                .merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
         userOrdersPerSymbolStorage.get(order.getUser())
                 .merge(order.getStock().getSymbol(), 1, Integer::sum);
     }
@@ -46,21 +46,12 @@ public class CheckedOrdersStorage {
         return order.getSide().equals(Side.BUY) ? sum : -(sum);
     }
 
-    public AtomicInteger getPassedOrdersCount() {
-        return passedOrdersCount;
+    public int getPassedOrdersCount() {
+        return passedOrdersCount.get();
     }
 
     public int getUserPassedOrdersCount(User user) {
         return userPassedOrdersCountStorage.getOrDefault(user, 0);
-    }
-
-
-    public Map<User, HashMap<String, Integer>> getSymbolPositionPerUserStorage() {
-        return symbolPositionPerUserStorage;
-    }
-
-    public Map<User, HashMap<String, Integer>> getUserOrdersPerSymbolStorage() {
-        return userOrdersPerSymbolStorage;
     }
 
     public double getUserMoneyPosition(User user) {

@@ -18,16 +18,16 @@ public class LimitChecker implements Runnable {
     private final BlockingQueue<Order> queue;
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
-    private final AtomicInteger workingTraders;
+    private final AtomicInteger activeTraders;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger workingTraders) {
+    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger activeTraders) {
         this.queue = queue;
         if (limits.isEmpty()) {
             throw new NoLimitsException();
         }
         this.limits = limits;
         this.storage = storage;
-        this.workingTraders = workingTraders;
+        this.activeTraders = activeTraders;
     }
 
     public void checkOrder() throws InterruptedException {
@@ -44,7 +44,7 @@ public class LimitChecker implements Runnable {
 
     @Override
     public void run() {
-        while (workingTraders.get() != 0 || !queue.isEmpty()) {
+        while (activeTraders.get() != 0 || !queue.isEmpty()) {
             try {
                 checkOrder();
             } catch (InterruptedException e) {

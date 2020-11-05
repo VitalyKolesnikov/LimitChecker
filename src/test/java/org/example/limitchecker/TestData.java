@@ -6,6 +6,7 @@ import org.example.limitchecker.model.Stock;
 import org.example.limitchecker.model.User;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class TestData {
     public static Stock STOCK1 = new Stock("ETSY", 139.73);
@@ -13,4 +14,6 @@ public class TestData {
     public static Order ORDER1 = new Order(1, LocalTime.now(), User.MIKE, STOCK1,35, Side.BUY,139.16);
     public static Order ORDER2 = new Order(2, LocalTime.now(), User.MIKE, STOCK1,75, Side.BUY,139.16);
     public static Order ORDER3 = new Order(3, LocalTime.now(), User.MIKE, STOCK1,60, Side.SELL,139.22);
+
+    public static List<Order> ORDER_LIST = List.of(ORDER1, ORDER2, ORDER3);
 }
