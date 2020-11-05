@@ -13,12 +13,12 @@ import java.util.Random;
 
 public class StockLoader {
 
-    private static final String STOCKS = "src/main/resources/stocks.csv";
+    public static final String STOCKS_PATH = "src/main/resources/stocks.csv";
 
-    public List<Stock> loadStocks() {
+    public List<Stock> loadStocks(String path) {
         List<Stock> result = new ArrayList<>();
         try {
-            for (String line : getFileContents(STOCKS)) {
+            for (String line : getFileContents(path)) {
                 String[] stockArr = line.split(",");
                 result.add(new Stock(stockArr[0], Double.parseDouble(stockArr[5])));
             }
@@ -29,7 +29,7 @@ public class StockLoader {
     }
 
     public Stock getRandomStock() {
-        List<Stock> list = loadStocks();
+        List<Stock> list = loadStocks(STOCKS_PATH);
         Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }

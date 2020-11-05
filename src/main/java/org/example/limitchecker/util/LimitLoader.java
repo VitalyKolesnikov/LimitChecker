@@ -14,7 +14,7 @@ import java.util.List;
 
 public class LimitLoader {
 
-    private static final String LIMITS_PATH = "src/main/resources/limits/";
+    public static final String LIMITS_PATH = "src/main/resources/limits/";
 
     public List<Limit> loadLimits() {
 

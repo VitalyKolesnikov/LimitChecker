@@ -11,14 +11,12 @@ import java.util.List;
 
 public class OrderLoader {
 
-    private static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
-
     private static final Logger log = LoggerFactory.getLogger(OrderLoader.class);
 
-    public List<Order> loadOrdersFromFile(int amount) {
+    public List<Order> loadOrdersFromFile(String path, int amount) {
         log.info("Loading orders from file...");
         List<Order> result = new ArrayList<>();
-        try (FileInputStream file = new FileInputStream(ORDERS_PATH);
+        try (FileInputStream file = new FileInputStream(path);
              ObjectInputStream reader = new ObjectInputStream(file)) {
             for (int i = 0; i < amount; i++) {
                 try {

@@ -18,8 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class OrderGenerator {
 
-    private static final int ORDERS_NUM = 1_000_000;
-    private static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
+    public static final int ORDERS_NUM = 1_000_000;
+    public static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
 
     public static void main(String[] args) {
         OrderGenerator generator = new OrderGenerator();
