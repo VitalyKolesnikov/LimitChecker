@@ -7,20 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LimitChecker implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
+    public static final int QUEUE_SIZE = 500;
 
-    private final BlockingQueue<Order> queue;
+    private final BlockingQueue<Order> queue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+    private final QueueProxyImpl queueProxy = new QueueProxyImpl(queue);
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
     private final AtomicInteger activeTraders;
 
-    public LimitChecker(BlockingQueue<Order> queue, List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger activeTraders) {
-        this.queue = queue;
+    public LimitChecker(List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger activeTraders) {
         if (limits.isEmpty()) {
             log.warn("Empty limit list");
         }
@@ -51,5 +53,9 @@ public class LimitChecker implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public QueueProxyImpl getQueueProxy() {
+        return queueProxy;
     }
 }

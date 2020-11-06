@@ -11,11 +11,11 @@ public class Trader implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Trader.class);
 
-    private final QueueProxy<Order> queue;
+    private final QueueProxy queue;
     private final List<Order> orderList;
     private final AtomicInteger activeTraders;
 
-    public Trader(QueueProxy<Order> queue, List<Order> orderList, AtomicInteger activeTraders) {
+    public Trader(QueueProxy queue, List<Order> orderList, AtomicInteger activeTraders) {
         this.queue = queue;
         this.orderList = orderList;
         this.activeTraders = activeTraders;

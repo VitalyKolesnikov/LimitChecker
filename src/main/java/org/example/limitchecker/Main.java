@@ -18,7 +18,6 @@ public class Main {
 
     public static final int ORDERS_NUM = 100_000;
     public static final int TRADERS_NUM = 50;
-    public static final int QUEUE_SIZE = 500;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -27,28 +26,27 @@ public class Main {
         List<Limit> limitList = db.getLimits();
         List<User> userList = db.getUserList();
 
-        BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-        QueueProxy<Order> orderQueueProxy = new QueueProxy<>(orderQueue);
-
         CheckedOrdersStorage storage = new CheckedOrdersStorage();
-        AtomicInteger activeTraders = new AtomicInteger(TRADERS_NUM);
+        AtomicInteger activeTradersCount = new AtomicInteger(TRADERS_NUM);
 
-        long startTime = System.nanoTime();
+        LimitChecker checker = new LimitChecker(limitList, storage, activeTradersCount);
 
         Trader trader;
         int ordersPerTrader = orderList.size() / TRADERS_NUM;
         ExecutorService traderExecutor = Executors.newFixedThreadPool(TRADERS_NUM);
 
+        long startTime = System.nanoTime();
+
         for (int i = 0; i < TRADERS_NUM; i++) {
             int firstOrder = i * ordersPerTrader;
             int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(orderQueueProxy, orderList.subList(firstOrder, lastOrder), activeTraders);
+            trader = new Trader(checker.getQueueProxy(), orderList.subList(firstOrder, lastOrder), activeTradersCount);
             traderExecutor.submit(trader);
         }
 
         traderExecutor.shutdown();
 
-        Thread checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage, activeTraders), "LimitChecker");
+        Thread checkerThread = new Thread(checker, "LimitChecker");
         checkerThread.start();
         checkerThread.join();
 

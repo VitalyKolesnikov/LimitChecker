@@ -9,10 +9,10 @@ import java.util.concurrent.BlockingQueue;
 import static org.example.limitchecker.TestData.ORDER1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class QueueProxyTest {
+class QueueProxyImplTest {
 
     BlockingQueue<Order> innerQueue = new ArrayBlockingQueue<>(5);
-    QueueProxy<Order> queue = new QueueProxy<>(innerQueue);
+    QueueProxyImpl queue = new QueueProxyImpl(innerQueue);
 
     @Test
     void put() throws InterruptedException {

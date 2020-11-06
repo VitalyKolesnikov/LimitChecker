@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TraderTest {
 
     BlockingQueue<Order> innerQueue = new ArrayBlockingQueue<>(5);
-    QueueProxy<Order> queue = new QueueProxy<>(innerQueue);
+    QueueProxyImpl queue = new QueueProxyImpl(innerQueue);
     AtomicInteger workingTraders;
     Trader trader;
 

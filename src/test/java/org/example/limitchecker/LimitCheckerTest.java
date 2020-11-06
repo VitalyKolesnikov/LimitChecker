@@ -1,6 +1,5 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
 import org.example.limitchecker.repository.Database;
@@ -8,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.example.limitchecker.TestData.ORDER1;
@@ -18,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LimitCheckerTest {
 
-    BlockingQueue<Order> orderQueue;
     CheckedOrdersStorage storage;
     AtomicInteger workingTraders;
     LimitChecker checker;
@@ -26,11 +22,10 @@ class LimitCheckerTest {
     @BeforeEach
     void setUp() {
         Database db = new Database();
-        orderQueue = new ArrayBlockingQueue<>(50);
         List<Limit> limitList = db.getLimits();
         storage = new CheckedOrdersStorage();
         workingTraders = new AtomicInteger(10);
-        checker = new LimitChecker(orderQueue, limitList, storage, workingTraders);
+        checker = new LimitChecker(limitList, storage, workingTraders);
     }
 
     @Test
@@ -43,7 +38,7 @@ class LimitCheckerTest {
 
     @Test
     void addPassedOrderToStorage() throws InterruptedException {
-        orderQueue.put(ORDER1);
+        checker.getQueueProxy().put(ORDER1);
         checker.checkOrder();
         assertEquals(1, storage.getPassedOrdersCount());
     }
