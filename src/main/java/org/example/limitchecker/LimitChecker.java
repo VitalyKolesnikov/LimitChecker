@@ -17,7 +17,7 @@ public class LimitChecker implements Runnable {
     public static final int QUEUE_SIZE = 500;
 
     private final BlockingQueue<Order> queue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-    private final QueueProxyImpl queueProxy = new QueueProxyImpl(queue);
+    private final QueueProxy queueProxy = new QueueProxyImpl(queue);
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
     private final AtomicInteger activeTraders;
@@ -55,7 +55,7 @@ public class LimitChecker implements Runnable {
         }
     }
 
-    public QueueProxyImpl getQueueProxy() {
+    public QueueProxy getQueueProxy() {
         return queueProxy;
     }
 }

@@ -47,7 +47,7 @@ public class Order implements Serializable {
     public String toString() {
         return "{" + id +
                 ", " + time +
-                ", " + user +
+                ", " + user.getName() +
                 ", " + stock +
                 ", " + lotCount +
                 ", " + side +
