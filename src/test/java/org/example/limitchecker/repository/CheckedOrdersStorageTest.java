@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.example.limitchecker.TestData.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CheckedOrdersStorageTest {
@@ -18,6 +19,11 @@ class CheckedOrdersStorageTest {
         checkedOrdersStorage.addOrder(ORDER1);
         checkedOrdersStorage.addOrder(ORDER2);
         checkedOrdersStorage.addOrder(ORDER3);
+    }
+
+    @Test
+    void addOrder() {
+        assertDoesNotThrow(() -> checkedOrdersStorage.addOrder(null));
     }
 
     @Test

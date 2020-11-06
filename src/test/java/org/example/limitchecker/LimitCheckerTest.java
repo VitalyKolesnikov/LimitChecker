@@ -47,5 +47,4 @@ class LimitCheckerTest {
         checker.checkOrder();
         assertEquals(1, storage.getPassedOrdersCount());
     }
-
 }

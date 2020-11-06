@@ -3,12 +3,16 @@ package org.example.limitchecker.repository;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CheckedOrdersStorage {
+
+    private static final Logger log = LoggerFactory.getLogger(CheckedOrdersStorage.class);
 
     private final AtomicInteger passedOrdersCount = new AtomicInteger(0);
     private final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
@@ -18,6 +22,11 @@ public class CheckedOrdersStorage {
     private final Map<User, Map<String, Integer>> userOrdersPerSymbolStorage = new ConcurrentHashMap<>();
 
     public void addOrder(Order order) {
+        if (order == null) {
+            log.warn("Can`t add null order to the storage!");
+            return;
+        }
+
         passedOrdersCount.incrementAndGet();
         symbolPositionStorage.merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
         userPassedOrdersCountStorage.merge(order.getUser(), 1, Integer::sum);
@@ -27,10 +36,7 @@ public class CheckedOrdersStorage {
         symbolPositionPerUserStorage.get(order.getUser()).merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
 
         userOrdersPerSymbolStorage.computeIfAbsent(order.getUser(), v -> new ConcurrentHashMap<>());
-
-        userOrdersPerSymbolStorage.get(order.getUser())
-                .merge(order.getStock().getSymbol(), 1, Integer::sum);
-
+        userOrdersPerSymbolStorage.get(order.getUser()).merge(order.getStock().getSymbol(), 1, Integer::sum);
     }
 
     public int computePositionChange(Order order) {
@@ -66,7 +72,7 @@ public class CheckedOrdersStorage {
 
     public int getUserOrdersPerSymbolCount(User user, String symbol) {
         Map<String, Integer> userSymbolPositionMap = userOrdersPerSymbolStorage.get(user);
-        return  userSymbolPositionMap == null ? 0 : userSymbolPositionMap.getOrDefault(symbol, 0);
+        return userSymbolPositionMap == null ? 0 : userSymbolPositionMap.getOrDefault(symbol, 0);
     }
 
 }
