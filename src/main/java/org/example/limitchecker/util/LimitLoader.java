@@ -12,9 +12,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.example.limitchecker.repository.Database.LIMITS_PATH;
+
 public class LimitLoader {
 
-    public static final String LIMITS_PATH = "src/main/resources/limits/";
+    private final String path;
+
+    public LimitLoader(String path) {
+        this.path = path;
+    }
 
     public List<Limit> loadLimits() {
 
@@ -34,7 +40,7 @@ public class LimitLoader {
         for (Class<? extends Limit[]> cls : classes) {
             String name = cls.getSimpleName();
             name = name.substring(0, name.length() - 2);
-            try (final FileReader fileReader = new FileReader(LIMITS_PATH + name + ".json")) {
+            try (final FileReader fileReader = new FileReader(path + name + ".json")) {
                 final Limit[] limitArr = gson.fromJson(fileReader, cls);
                 result.addAll(Arrays.asList(limitArr));
             } catch (IOException e) {

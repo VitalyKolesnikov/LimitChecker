@@ -18,10 +18,10 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 100_000;
-    public static final int TRADERS_NUM = 25;
+    public static final int ORDERS_NUM = 10_000;
+    public static final int TRADERS_NUM = 20;
     public static final int CHECKERS_NUM = 3;
-    public static final int QUEUE_SIZE = 1000;
+    public static final int QUEUE_SIZE = 500;
 
     public static void main(String[] args) throws InterruptedException {
 

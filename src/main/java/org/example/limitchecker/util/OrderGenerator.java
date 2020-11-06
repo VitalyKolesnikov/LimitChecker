@@ -17,20 +17,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.example.limitchecker.repository.Database.ORDERS_PATH;
+import static org.example.limitchecker.repository.Database.STOCKS_PATH;
+
 public class OrderGenerator {
 
     public static final int ORDERS_NUM = 1_000_000;
-    public static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
 
     public static void main(String[] args) {
         OrderGenerator generator = new OrderGenerator();
         List<Order> orderList = generator.generate(ORDERS_NUM);
-        generator.writeToFile(orderList, ORDERS_PATH);
+        generator.writeToFile(orderList);
     }
 
     public List<Order> generate(int amount) {
         List<Order> result = new ArrayList<>();
-        StockLoader stockLoader = new StockLoader();
+        StockLoader stockLoader = new StockLoader(STOCKS_PATH);
         UserStorage userStorage = new UserStorage();
         Random random = new Random();
         for (int i = 1; i <= amount; i++) {
@@ -47,8 +49,8 @@ public class OrderGenerator {
         return result;
     }
 
-    public void writeToFile(List<? extends Serializable> list, String path) {
-        try (FileOutputStream fos = new FileOutputStream(path);
+    public void writeToFile(List<? extends Serializable> list) {
+        try (FileOutputStream fos = new FileOutputStream(ORDERS_PATH);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             for (Serializable element : list) {
                 oos.writeObject(element);

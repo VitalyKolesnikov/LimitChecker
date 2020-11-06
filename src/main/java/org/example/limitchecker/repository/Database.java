@@ -10,18 +10,19 @@ import org.example.limitchecker.util.StockLoader;
 
 import java.util.List;
 
-import static org.example.limitchecker.util.OrderGenerator.ORDERS_PATH;
-import static org.example.limitchecker.util.StockLoader.STOCKS_PATH;
-
 public class Database {
 
-    private final OrderLoader orderLoader = new OrderLoader();
-    private final StockLoader stockLoader = new StockLoader();
-    private final LimitLoader limitLoader = new LimitLoader();
+    public static final String ORDERS_PATH = "src/main/resources/orders_1m.ser";
+    public static final String STOCKS_PATH = "src/main/resources/stocks.csv";
+    public static final String LIMITS_PATH = "src/main/resources/limits/";
+
+    private final OrderLoader orderLoader = new OrderLoader(ORDERS_PATH);
+    private final StockLoader stockLoader = new StockLoader(STOCKS_PATH);
+    private final LimitLoader limitLoader = new LimitLoader(LIMITS_PATH);
     private final UserStorage userStorage = new UserStorage();
 
     public List<Order> getOrders(int amount) {
-        return orderLoader.loadOrdersFromFile(ORDERS_PATH, amount);
+        return orderLoader.loadOrdersFromFile(amount);
     }
 
     public List<Stock> getStocks() {

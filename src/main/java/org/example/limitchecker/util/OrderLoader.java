@@ -11,9 +11,15 @@ import java.util.List;
 
 public class OrderLoader {
 
+    private final String path;
+
     private static final Logger log = LoggerFactory.getLogger(OrderLoader.class);
 
-    public List<Order> loadOrdersFromFile(String path, int amount) {
+    public OrderLoader(String path) {
+        this.path = path;
+    }
+
+    public List<Order> loadOrdersFromFile(int amount) {
         log.info("Loading orders from file...");
         List<Order> result = new ArrayList<>();
         try (FileInputStream file = new FileInputStream(path);

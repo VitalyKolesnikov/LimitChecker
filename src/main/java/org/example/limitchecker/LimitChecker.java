@@ -30,6 +30,7 @@ public class LimitChecker implements Runnable {
     }
 
     public void checkOrder() throws InterruptedException {
+        log.info("Queue size: " + queue.size());
         Order order = queue.take();
         for (Limit limit : limits) {
             if (!limit.check(order, storage)) {
@@ -43,7 +44,6 @@ public class LimitChecker implements Runnable {
 
     @Override
     public void run() {
-        log.info("start check");
         while (activeTraders.get() != 0 || !queue.isEmpty()) {
             try {
                 checkOrder();
