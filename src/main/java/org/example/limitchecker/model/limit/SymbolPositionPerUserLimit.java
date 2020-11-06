@@ -16,7 +16,9 @@ public class SymbolPositionPerUserLimit extends SymbolPositionLimit {
     @Override
     public boolean check(Order order, CheckedOrdersStorage storage) {
         if (!order.getStock().getSymbol().equals(symbol) || !order.getUser().equals(user)) return true;
-        int potentialPosition = storage.getSymbolPositionPerUser(order.getStock().getSymbol(), order.getUser()) + storage.computePositionChange(order);
+        Integer currentPosition = storage.getSymbolPositionPerUser(order.getStock().getSymbol(), order.getUser());
+        int positionChange = storage.computePositionChange(order);
+        int potentialPosition = currentPosition == null ? positionChange : currentPosition + positionChange;
         if (potentialPosition < minPosition) return false;
         return potentialPosition <= maxPosition;
     }

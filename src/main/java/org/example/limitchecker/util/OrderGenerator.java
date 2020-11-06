@@ -4,6 +4,7 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.Stock;
 import org.example.limitchecker.model.User;
+import org.example.limitchecker.repository.UserStorage;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -30,10 +31,11 @@ public class OrderGenerator {
     public List<Order> generate(int amount) {
         List<Order> result = new ArrayList<>();
         StockLoader stockLoader = new StockLoader();
+        UserStorage userStorage = new UserStorage();
         Random random = new Random();
         for (int i = 1; i <= amount; i++) {
             LocalTime time = LocalTime.now();
-            User user = User.getRandom();
+            User user = userStorage.getRandom();
             Stock stock = stockLoader.getRandomStock();
             int lotCount = random.nextInt(100);
             Side side = random.nextInt(10) > 4 ? Side.BUY : Side.SELL;

@@ -4,7 +4,6 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.User;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,25 +14,23 @@ public class CheckedOrdersStorage {
     private final Map<String, Integer> symbolPositionStorage = new ConcurrentHashMap<>();
     private final Map<User, Integer> userPassedOrdersCountStorage = new ConcurrentHashMap<>();
     private final Map<User, Double> userMoneyPositionStorage = new ConcurrentHashMap<>();
-    private final Map<User, HashMap<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
-    private final Map<User, HashMap<String, Integer>> userOrdersPerSymbolStorage = new ConcurrentHashMap<>();
-
-    {
-        for (User user : User.values()) {
-            symbolPositionPerUserStorage.put(user, new HashMap<>());
-            userOrdersPerSymbolStorage.put(user, new HashMap<>());
-        }
-    }
+    private final Map<User, Map<String, Integer>> symbolPositionPerUserStorage = new ConcurrentHashMap<>();
+    private final Map<User, Map<String, Integer>> userOrdersPerSymbolStorage = new ConcurrentHashMap<>();
 
     public void addOrder(Order order) {
         passedOrdersCount.incrementAndGet();
         symbolPositionStorage.merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
         userPassedOrdersCountStorage.merge(order.getUser(), 1, Integer::sum);
         userMoneyPositionStorage.merge(order.getUser(), computeMoneyPositionChange(order), Double::sum);
-        symbolPositionPerUserStorage.get(order.getUser())
-                .merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
+
+        symbolPositionPerUserStorage.computeIfAbsent(order.getUser(), v -> new ConcurrentHashMap<>());
+        symbolPositionPerUserStorage.get(order.getUser()).merge(order.getStock().getSymbol(), computePositionChange(order), Integer::sum);
+
+        userOrdersPerSymbolStorage.computeIfAbsent(order.getUser(), v -> new ConcurrentHashMap<>());
+
         userOrdersPerSymbolStorage.get(order.getUser())
                 .merge(order.getStock().getSymbol(), 1, Integer::sum);
+
     }
 
     public int computePositionChange(Order order) {
@@ -54,20 +51,22 @@ public class CheckedOrdersStorage {
         return userPassedOrdersCountStorage.getOrDefault(user, 0);
     }
 
-    public double getUserMoneyPosition(User user) {
-        return userMoneyPositionStorage.getOrDefault(user, 0.0);
+    public Double getUserMoneyPosition(User user) {
+        return userMoneyPositionStorage.get(user);
     }
 
-    public int getSymbolPosition(String symbol) {
-        return symbolPositionStorage.getOrDefault(symbol, 0);
+    public Integer getSymbolPosition(String symbol) {
+        return symbolPositionStorage.get(symbol);
     }
 
-    public int getSymbolPositionPerUser(String symbol, User user) {
-        return symbolPositionPerUserStorage.get(user).getOrDefault(symbol, 0);
+    public Integer getSymbolPositionPerUser(String symbol, User user) {
+        Map<String, Integer> userSymbolPositionMap = symbolPositionPerUserStorage.get(user);
+        return userSymbolPositionMap == null ? null : userSymbolPositionMap.get(symbol);
     }
 
     public int getUserOrdersPerSymbolCount(User user, String symbol) {
-        return userOrdersPerSymbolStorage.get(user).getOrDefault(symbol, 0);
+        Map<String, Integer> userSymbolPositionMap = userOrdersPerSymbolStorage.get(user);
+        return  userSymbolPositionMap == null ? 0 : userSymbolPositionMap.getOrDefault(symbol, 0);
     }
 
 }

@@ -1,1 +1,1 @@
-[{"symbol":"KIRK","user":"MIKE","maxLots":15},{"symbol":"TSLA","user":"SAM","maxLots":15},{"symbol":"ETSY","user":"CHARLIE","maxLots":15},{"symbol":"LAZY","user":"BARBARA","maxLots":15},{"symbol":"TRIL","user":"ROBERT","maxLots":20}]
+[{"symbol":"KIRK","user":{"name":"Mike"},"maxLots":15},{"symbol":"TSLA","user":{"name":"Sam"},"maxLots":15},{"symbol":"ETSY","user":{"name":"Charlie"},"maxLots":15},{"symbol":"LAZY","user":{"name":"Barbara"},"maxLots":15},{"symbol":"TRIL","user":{"name":"Robert"},"maxLots":20}]

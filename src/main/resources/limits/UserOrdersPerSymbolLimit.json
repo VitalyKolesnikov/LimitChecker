@@ -1,1 +1,1 @@
-[{"symbol":"SAVA","maxOrders":25,"user":"SAM"},{"symbol":"BNTX","maxOrders":30,"user":"CHARLIE"},{"symbol":"FUTU","maxOrders":15,"user":"BARBARA"},{"symbol":"ZS","maxOrders":33,"user":"ROBERT"}]
+[{"symbol":"SAVA","maxOrders":25,"user":{"name":"Sam"}},{"symbol":"BNTX","maxOrders":30,"user":{"name":"Charlie"}},{"symbol":"FUTU","maxOrders":15,"user":{"name":"Barbara"}},{"symbol":"ZS","maxOrders":33,"user":{"name":"Robert"}}]

@@ -23,14 +23,6 @@ public class Order implements Serializable {
         this.price = price;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
     public User getUser() {
         return user;
     }

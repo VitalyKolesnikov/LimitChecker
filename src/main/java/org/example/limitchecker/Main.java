@@ -8,7 +8,6 @@ import org.example.limitchecker.repository.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -20,15 +19,16 @@ public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static final int ORDERS_NUM = 100_000;
-    public static final int TRADERS_NUM = 50;
-    public static final int CHECKERS_NUM = 5;
-    public static final int QUEUE_SIZE = 500;
+    public static final int TRADERS_NUM = 25;
+    public static final int CHECKERS_NUM = 3;
+    public static final int QUEUE_SIZE = 1000;
 
     public static void main(String[] args) throws InterruptedException {
 
         Database db = new Database();
         List<Order> orderList = db.getOrders(ORDERS_NUM);
         List<Limit> limitList = db.getLimits();
+        List<User> userList = db.getUserList();
         BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
         CheckedOrdersStorage storage = new CheckedOrdersStorage();
         AtomicInteger activeTraders = new AtomicInteger(TRADERS_NUM);
@@ -64,8 +64,9 @@ public class Main {
         ));
 
         log.info("-----------User passed orders / money position----------");
-        Arrays.stream(User.values()).forEach(e ->
-                log.info("{}: {} / {} $", e, storage.getUserPassedOrdersCount(e), (int) storage.getUserMoneyPosition(e)));
+        userList.forEach(e ->
+                log.info("{}: {} / {}", e.getName(), storage.getUserPassedOrdersCount(e),
+                        storage.getUserMoneyPosition(e) == null ? null : storage.getUserMoneyPosition(e).intValue() + " $"));
 
         log.info("---------------------------------------");
         log.info("Time: {} milliseconds", total);

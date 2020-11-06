@@ -13,7 +13,7 @@ class LotsInOrderLimitTest extends AbstractLimitTest {
 
     @Test
     void check() {
-        assertTrue(limit.check(ORDER1, storage));
-        assertFalse(limit.check(ORDER2, storage));
+        assertTrue(limit.check(ORDER1, checkedOrdersStorage));
+        assertFalse(limit.check(ORDER2, checkedOrdersStorage));
     }
 }

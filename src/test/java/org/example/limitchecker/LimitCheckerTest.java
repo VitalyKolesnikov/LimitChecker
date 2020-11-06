@@ -1,6 +1,5 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.exception.NoLimitsException;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
@@ -8,7 +7,6 @@ import org.example.limitchecker.repository.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -33,11 +31,6 @@ class LimitCheckerTest {
         storage = new CheckedOrdersStorage();
         workingTraders = new AtomicInteger(10);
         checker = new LimitChecker(orderQueue, limitList, storage, workingTraders);
-    }
-
-    @Test
-    void createWithEmptyLimitList() {
-        assertThrows(NoLimitsException.class, () -> new LimitChecker(orderQueue, new ArrayList<>(), storage, workingTraders));
     }
 
     @Test

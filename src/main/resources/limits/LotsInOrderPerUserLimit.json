@@ -1,1 +1,1 @@
-[{"user":"MIKE","maxLots":50},{"user":"COREY","maxLots":45},{"user":"SARAH","maxLots":55},{"user":"JOHN","maxLots":60}]
+[{"user":{"name":"Mike"},"maxLots":50},{"user":{"name":"Corey"},"maxLots":45},{"user":{"name":"Sarah"},"maxLots":55},{"user":{"name":"John"},"maxLots":60}]

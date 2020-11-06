@@ -18,7 +18,11 @@ public class SymbolPositionLimit implements Limit {
     @Override
     public boolean check(Order order, CheckedOrdersStorage storage) {
         if (!order.getStock().getSymbol().equals(symbol)) return true;
-        int potentialPosition = storage.getSymbolPosition(order.getStock().getSymbol()) + storage.computePositionChange(order);
+
+        Integer currentPosition = storage.getSymbolPosition(order.getStock().getSymbol());
+        int positionChange = storage.computePositionChange(order);
+        int potentialPosition = currentPosition == null ? positionChange : currentPosition + positionChange;
+
         if (potentialPosition < minPosition) return false;
         return potentialPosition <= maxPosition;
     }

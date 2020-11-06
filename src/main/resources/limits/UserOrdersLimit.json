@@ -1,1 +1,1 @@
-[{"maxOrders":65,"user":"MIKE"},{"maxOrders":60,"user":"COREY"},{"maxOrders":75,"user":"SARAH"},{"maxOrders":55,"user":"JOHN"}]
+[{"maxOrders":65,"user":{"name":"Mike"}},{"maxOrders":60,"user":{"name":"Corey"}},{"maxOrders":75,"user":{"name":"Sarah"}},{"maxOrders":55,"user":{"name":"John"}}]

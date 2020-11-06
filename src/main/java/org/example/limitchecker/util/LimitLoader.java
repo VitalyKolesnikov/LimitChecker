@@ -1,8 +1,8 @@
 package org.example.limitchecker.util;
 
 import com.google.gson.Gson;
-import org.example.limitchecker.model.User;
 import org.example.limitchecker.model.limit.*;
+import org.example.limitchecker.repository.UserStorage;
 
 import java.io.File;
 import java.io.FileReader;
@@ -49,6 +49,7 @@ public class LimitLoader {
 
         Gson gson = new Gson();
         File file;
+        UserStorage userStorage = new UserStorage();
 
         file = new File(LIMITS_PATH + "LotsInOrderLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
@@ -61,10 +62,10 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "LotsInOrderPerUserLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderPerUserLimit[] limitArr = {
-                    new LotsInOrderPerUserLimit(50, User.MIKE),
-                    new LotsInOrderPerUserLimit(45, User.COREY),
-                    new LotsInOrderPerUserLimit(55, User.SARAH),
-                    new LotsInOrderPerUserLimit(60, User.JOHN)
+                    new LotsInOrderPerUserLimit(50, userStorage.getByName("Mike")),
+                    new LotsInOrderPerUserLimit(45, userStorage.getByName("Corey")),
+                    new LotsInOrderPerUserLimit(55, userStorage.getByName("Sarah")),
+                    new LotsInOrderPerUserLimit(60, userStorage.getByName("John"))
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -74,11 +75,11 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "LotsInOrderPerUserPerSymbolLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final LotsInOrderPerUserPerSymbolLimit[] limitArr = {
-                    new LotsInOrderPerUserPerSymbolLimit(15, User.MIKE, "KIRK"),
-                    new LotsInOrderPerUserPerSymbolLimit(15, User.SAM, "TSLA"),
-                    new LotsInOrderPerUserPerSymbolLimit(15, User.CHARLIE, "ETSY"),
-                    new LotsInOrderPerUserPerSymbolLimit(15, User.BARBARA, "LAZY"),
-                    new LotsInOrderPerUserPerSymbolLimit(20, User.ROBERT, "TRIL")
+                    new LotsInOrderPerUserPerSymbolLimit(15, userStorage.getByName("Mike"), "KIRK"),
+                    new LotsInOrderPerUserPerSymbolLimit(15, userStorage.getByName("Sam"), "TSLA"),
+                    new LotsInOrderPerUserPerSymbolLimit(15, userStorage.getByName("Charlie"), "ETSY"),
+                    new LotsInOrderPerUserPerSymbolLimit(15, userStorage.getByName("Barbara"), "LAZY"),
+                    new LotsInOrderPerUserPerSymbolLimit(20, userStorage.getByName("Robert"), "TRIL")
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -103,12 +104,12 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "SymbolPositionPerUserLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final SymbolPositionPerUserLimit[] limitArr = {
-                    new SymbolPositionPerUserLimit(-75, 75, "TRIL", User.MIKE),
-                    new SymbolPositionPerUserLimit(-70, 70, "NLS", User.SAM),
-                    new SymbolPositionPerUserLimit(-80, 85, "TSLA", User.CHARLIE),
-                    new SymbolPositionPerUserLimit(-90, 100, "OSTK", User.BARBARA),
-                    new SymbolPositionPerUserLimit(-90, 110, "SE", User.ROBERT),
-                    new SymbolPositionPerUserLimit(-95, 90, "PTON", User.MICHELE)
+                    new SymbolPositionPerUserLimit(-75, 75, "TRIL", userStorage.getByName("Mike")),
+                    new SymbolPositionPerUserLimit(-70, 70, "NLS", userStorage.getByName("Sam")),
+                    new SymbolPositionPerUserLimit(-80, 85, "TSLA", userStorage.getByName("Charlie")),
+                    new SymbolPositionPerUserLimit(-90, 100, "OSTK", userStorage.getByName("Barbara")),
+                    new SymbolPositionPerUserLimit(-90, 110, "SE", userStorage.getByName("Robert")),
+                    new SymbolPositionPerUserLimit(-95, 90, "PTON", userStorage.getByName("Michele"))
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -118,10 +119,10 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "UserOrdersLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final UserOrdersLimit[] limitArr = {
-                    new UserOrdersLimit(65, User.MIKE),
-                    new UserOrdersLimit(60, User.COREY),
-                    new UserOrdersLimit(75, User.SARAH),
-                    new UserOrdersLimit(55, User.JOHN)
+                    new UserOrdersLimit(65, userStorage.getByName("Mike")),
+                    new UserOrdersLimit(60, userStorage.getByName("Corey")),
+                    new UserOrdersLimit(75, userStorage.getByName("Sarah")),
+                    new UserOrdersLimit(55, userStorage.getByName("John"))
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -131,10 +132,10 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "UserOrdersPerSymbolLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final UserOrdersPerSymbolLimit[] limitArr = {
-                    new UserOrdersPerSymbolLimit(25, User.SAM, "SAVA"),
-                    new UserOrdersPerSymbolLimit(30, User.CHARLIE, "BNTX"),
-                    new UserOrdersPerSymbolLimit(15, User.BARBARA, "FUTU"),
-                    new UserOrdersPerSymbolLimit(33, User.ROBERT, "ZS")
+                    new UserOrdersPerSymbolLimit(25, userStorage.getByName("Sam"), "SAVA"),
+                    new UserOrdersPerSymbolLimit(30, userStorage.getByName("Charlie"), "BNTX"),
+                    new UserOrdersPerSymbolLimit(15, userStorage.getByName("Barbara"), "FUTU"),
+                    new UserOrdersPerSymbolLimit(33, userStorage.getByName("Robert"), "ZS")
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
@@ -144,12 +145,12 @@ public class LimitLoader {
         file = new File(LIMITS_PATH + "UserMoneyPositionLimit.json");
         try (final FileWriter fileWriter = new FileWriter(file)) {
             final UserMoneyPositionLimit[] limitArr = {
-                    new UserMoneyPositionLimit(-90000, 90000, User.SAM),
-                    new UserMoneyPositionLimit(-100000, 100000, User.MIKE),
-                    new UserMoneyPositionLimit(-110000, 110000, User.JOHN),
-                    new UserMoneyPositionLimit(-115000, 115000, User.SARAH),
-                    new UserMoneyPositionLimit(-120000, 120000, User.ROBERT),
-                    new UserMoneyPositionLimit(-125000, 125000, User.BARBARA)
+                    new UserMoneyPositionLimit(-90000, 90000, userStorage.getByName("Sam")),
+                    new UserMoneyPositionLimit(-100000, 100000, userStorage.getByName("Mike")),
+                    new UserMoneyPositionLimit(-110000, 110000, userStorage.getByName("John")),
+                    new UserMoneyPositionLimit(-115000, 115000, userStorage.getByName("Sarah")),
+                    new UserMoneyPositionLimit(-120000, 120000, userStorage.getByName("Robert")),
+                    new UserMoneyPositionLimit(-125000, 125000, userStorage.getByName("Barbara"))
             };
             gson.toJson(limitArr, fileWriter);
         } catch (IOException e) {
