@@ -10,6 +10,7 @@ public class UserMoneyPositionLimit implements Limit {
     private final User user;
 
     public UserMoneyPositionLimit(int minPosition, int maxPosition, User user) {
+        if (minPosition > maxPosition) throw new IllegalArgumentException();
         this.minPosition = minPosition;
         this.maxPosition = maxPosition;
         this.user = user;

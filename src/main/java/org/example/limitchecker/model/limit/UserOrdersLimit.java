@@ -10,6 +10,7 @@ public class UserOrdersLimit implements Limit {
     protected final User user;
 
     public UserOrdersLimit(int maxOrders, User user) {
+        if (maxOrders < 0) throw new IllegalArgumentException();
         this.maxOrders = maxOrders;
         this.user = user;
     }

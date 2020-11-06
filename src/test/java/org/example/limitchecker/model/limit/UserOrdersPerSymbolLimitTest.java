@@ -3,8 +3,7 @@ package org.example.limitchecker.model.limit;
 import org.junit.jupiter.api.Test;
 
 import static org.example.limitchecker.TestData.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserOrdersPerSymbolLimitTest extends UserOrdersLimitTest {
 
@@ -17,5 +16,10 @@ class UserOrdersPerSymbolLimitTest extends UserOrdersLimitTest {
         assertTrue(limit.check(ORDER2, checkedOrdersStorage));
         checkedOrdersStorage.addOrder(ORDER1);
         assertFalse(limit.check(ORDER3, checkedOrdersStorage));
+    }
+
+    @Test
+    void zeroOrNegativeMaxOrders() {
+        assertThrows(IllegalArgumentException.class, () -> new UserOrdersPerSymbolLimit(-5, userStorage.getByName("Mike"), "ETSY"));
     }
 }

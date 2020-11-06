@@ -8,6 +8,7 @@ public class LotsInOrderLimit implements Limit {
     protected final int maxLots;
 
     public LotsInOrderLimit(int maxLots) {
+        if (maxLots < 1) throw new IllegalArgumentException();
         this.maxLots = maxLots;
     }
 

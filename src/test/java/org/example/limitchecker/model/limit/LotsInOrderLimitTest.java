@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.example.limitchecker.TestData.ORDER1;
 import static org.example.limitchecker.TestData.ORDER2;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LotsInOrderLimitTest extends AbstractLimitTest {
 
@@ -15,5 +14,11 @@ class LotsInOrderLimitTest extends AbstractLimitTest {
     void check() {
         assertTrue(limit.check(ORDER1, checkedOrdersStorage));
         assertFalse(limit.check(ORDER2, checkedOrdersStorage));
+    }
+
+    @Test
+    void zeroOrNegativeMaxLots() {
+        assertThrows(IllegalArgumentException.class, () -> new LotsInOrderLimit(0));
+        assertThrows(IllegalArgumentException.class, () -> new LotsInOrderLimit(-10));
     }
 }
