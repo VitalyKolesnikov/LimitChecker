@@ -9,18 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 10_000;
-    public static final int TRADERS_NUM = 20;
-    public static final int CHECKERS_NUM = 3;
+    public static final int ORDERS_NUM = 100_000;
+    public static final int TRADERS_NUM = 50;
     public static final int QUEUE_SIZE = 500;
 
     public static void main(String[] args) throws InterruptedException {
@@ -29,7 +26,10 @@ public class Main {
         List<Order> orderList = db.getOrders(ORDERS_NUM);
         List<Limit> limitList = db.getLimits();
         List<User> userList = db.getUserList();
+
         BlockingQueue<Order> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+        QueueProxy<Order> orderQueueProxy = new QueueProxy<>(orderQueue);
+
         CheckedOrdersStorage storage = new CheckedOrdersStorage();
         AtomicInteger activeTraders = new AtomicInteger(TRADERS_NUM);
 
@@ -37,36 +37,33 @@ public class Main {
 
         Trader trader;
         int ordersPerTrader = orderList.size() / TRADERS_NUM;
+        ExecutorService traderExecutor = Executors.newFixedThreadPool(TRADERS_NUM);
 
-        Thread traderThread;
         for (int i = 0; i < TRADERS_NUM; i++) {
             int firstOrder = i * ordersPerTrader;
             int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(new QueueProxy<>(orderQueue), orderList.subList(firstOrder, lastOrder), activeTraders);
-            traderThread = new Thread(trader, "Trader" + i);
-            traderThread.start();
+            trader = new Trader(orderQueueProxy, orderList.subList(firstOrder, lastOrder), activeTraders);
+            traderExecutor.submit(trader);
         }
 
-        Thread checkerThread;
-        for (int i = 0; i < CHECKERS_NUM; i++) {
-            checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage, activeTraders), "Checker" + i);
-            checkerThread.start();
-            checkerThread.join();
-        }
+        traderExecutor.shutdown();
+
+        Thread checkerThread = new Thread(new LimitChecker(orderQueue, limitList, storage, activeTraders), "LimitChecker");
+        checkerThread.start();
+        checkerThread.join();
 
         long endTime = System.nanoTime();
         long total = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
 
         log.info("---------------------------");
         log.info("All orders has been checked");
+
         log.info("-----------Result stock positions----------");
-        db.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), storage.getSymbolPosition(e.getSymbol())
-        ));
+        db.getStocks().forEach(e -> log.info("{}: {}", e.getSymbol(), storage.getSymbolPosition(e.getSymbol())));
 
         log.info("-----------User passed orders / money position----------");
-        userList.forEach(e ->
-                log.info("{}: {} / {}", e.getName(), storage.getUserPassedOrdersCount(e),
-                        storage.getUserMoneyPosition(e) == null ? null : storage.getUserMoneyPosition(e).intValue() + " $"));
+        userList.forEach(e -> log.info("{}: {} / {}", e.getName(), storage.getUserPassedOrdersCount(e),
+                storage.getUserMoneyPosition(e) == null ? null : storage.getUserMoneyPosition(e).intValue() + " $"));
 
         log.info("---------------------------------------");
         log.info("Time: {} milliseconds", total);
