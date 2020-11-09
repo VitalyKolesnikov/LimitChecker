@@ -7,14 +7,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserMoneyPositionLimitTest extends AbstractLimitTest {
 
-    Limit limit = new UserMoneyPositionLimit(-5000, 5000, userStorage.getByName("Mike"));
+    Limit limit1 = new UserMoneyPositionLimit(-5000, 5000, userStorage.getByName("Mike"));
+    Limit limit2 = new UserMoneyPositionLimit(-1500, 1500, userStorage.getByName("John"));
 
     @Test
     void check() {
-        assertFalse(limit.check(ORDER3, checkedOrdersStorage));
-        assertTrue(limit.check(ORDER1, checkedOrdersStorage));
+        assertTrue(limit1.check(ORDER1, checkedOrdersStorage));
         checkedOrdersStorage.addOrder(ORDER1);
-        assertFalse(limit.check(ORDER2, checkedOrdersStorage));
+        assertFalse(limit1.check(ORDER2, checkedOrdersStorage));
+
+        assertTrue(limit2.check(ORDER4, checkedOrdersStorage));
+        checkedOrdersStorage.addOrder(ORDER4);
+        assertFalse(limit2.check(ORDER9, checkedOrdersStorage));
     }
 
     @Test

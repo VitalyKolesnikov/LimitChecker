@@ -18,11 +18,12 @@ class TraderTest {
     void setUp() {
         db = new Database();
         checker = new LimitChecker(db.getLimits(), new CheckedOrdersStorage());
-        trader = new Trader(checker, ORDER_LIST);
     }
 
     @Test
     void run() throws InterruptedException {
+        assertEquals(0, checker.getActiveTradersCount());
+        trader = new Trader(checker, ORDER_LIST);
         assertEquals(1, checker.getActiveTradersCount());
         Thread traderThread = new Thread(trader);
         traderThread.start();

@@ -58,7 +58,7 @@ public class CheckedOrdersStorage {
     }
 
     public Double getUserMoneyPosition(User user) {
-        return userMoneyPositionStorage.get(user);
+        return user == null ? null : userMoneyPositionStorage.get(user);
     }
 
     public Integer getSymbolPosition(String symbol) {
@@ -66,6 +66,7 @@ public class CheckedOrdersStorage {
     }
 
     public Integer getSymbolPositionPerUser(String symbol, User user) {
+        if (symbol == null || user == null) return null;
         Map<String, Integer> userSymbolPositionMap = symbolPositionPerUserStorage.get(user);
         return userSymbolPositionMap == null ? null : userSymbolPositionMap.get(symbol);
     }

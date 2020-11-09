@@ -15,8 +15,8 @@ class UserOrdersLimitTest extends AbstractLimitTest {
         assertTrue(limit.check(ORDER1, checkedOrdersStorage));
         checkedOrdersStorage.addOrder(ORDER1);
         assertTrue(limit.check(ORDER2, checkedOrdersStorage));
-        checkedOrdersStorage.addOrder(ORDER1);
-        assertFalse(limit.check(ORDER3, checkedOrdersStorage));
+        checkedOrdersStorage.addOrder(ORDER2);
+        assertFalse(limit.check(ORDER6, checkedOrdersStorage));
     }
 
     @Test
