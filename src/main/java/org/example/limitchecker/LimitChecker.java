@@ -11,24 +11,22 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LimitChecker implements Runnable {
+public class LimitChecker implements Runnable, QueueProxy {
 
     private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
     public static final int QUEUE_SIZE = 500;
 
     private final BlockingQueue<Order> queue = new ArrayBlockingQueue<>(QUEUE_SIZE);
-    private final QueueProxy queueProxy = new QueueProxyImpl(queue);
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
-    private final AtomicInteger activeTraders;
+    private final AtomicInteger activeTradersCount = new AtomicInteger(0);
 
-    public LimitChecker(List<Limit> limits, CheckedOrdersStorage storage, AtomicInteger activeTraders) {
+    public LimitChecker(List<Limit> limits, CheckedOrdersStorage storage) {
         if (limits.isEmpty()) {
             log.warn("Empty limit list");
         }
         this.limits = limits;
         this.storage = storage;
-        this.activeTraders = activeTraders;
     }
 
     public void checkOrder() throws InterruptedException {
@@ -36,7 +34,8 @@ public class LimitChecker implements Runnable {
         Order order = queue.take();
         for (Limit limit : limits) {
             if (!limit.check(order, storage)) {
-                log.info("Order {} status: __REJECT__ ({} violation) - {}", order, limit.getClass().getSimpleName(), Thread.currentThread().getName());
+                log.info("Order {} status: __REJECT__ ({} violation) - {}",
+                        order, limit.getClass().getSimpleName(), Thread.currentThread().getName());
                 return;
             }
         }
@@ -46,7 +45,7 @@ public class LimitChecker implements Runnable {
 
     @Override
     public void run() {
-        while (activeTraders.get() != 0 || !queue.isEmpty()) {
+        while (activeTradersCount.get() != 0 || !queue.isEmpty()) {
             try {
                 checkOrder();
             } catch (InterruptedException e) {
@@ -55,7 +54,22 @@ public class LimitChecker implements Runnable {
         }
     }
 
-    public QueueProxy getQueueProxy() {
-        return queueProxy;
+    @Override
+    public void put(Order order) throws InterruptedException {
+        queue.put(order);
+    }
+
+    @Override
+    public void registerTrader() {
+        activeTradersCount.incrementAndGet();
+    }
+
+    @Override
+    public void deregisterTrader() {
+        activeTradersCount.decrementAndGet();
+    }
+
+    public int getActiveTradersCount() {
+        return activeTradersCount.get();
     }
 }

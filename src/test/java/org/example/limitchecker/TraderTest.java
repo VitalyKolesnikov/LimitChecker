@@ -1,43 +1,32 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.model.Order;
+import org.example.limitchecker.repository.CheckedOrdersStorage;
+import org.example.limitchecker.repository.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.example.limitchecker.TestData.ORDER1;
 import static org.example.limitchecker.TestData.ORDER_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TraderTest {
 
-    BlockingQueue<Order> innerQueue = new ArrayBlockingQueue<>(5);
-    QueueProxyImpl queue = new QueueProxyImpl(innerQueue);
-    AtomicInteger workingTraders;
     Trader trader;
+    Database db;
+    LimitChecker checker;
 
     @BeforeEach
     void setUp() {
-        workingTraders = new AtomicInteger(10);
-        trader = new Trader(queue, ORDER_LIST, workingTraders);
-    }
-
-    @Test
-    void placeOrder() throws InterruptedException {
-        assertEquals(0, innerQueue.size());
-        trader.placeOrder(ORDER1);
-        assertEquals(1, innerQueue.size());
+        db = new Database();
+        checker = new LimitChecker(db.getLimits(), new CheckedOrdersStorage());
+        trader = new Trader(checker, ORDER_LIST);
     }
 
     @Test
     void run() throws InterruptedException {
+        assertEquals(1, checker.getActiveTradersCount());
         Thread traderThread = new Thread(trader);
         traderThread.start();
         traderThread.join();
-        assertEquals(3, innerQueue.size());
-        assertEquals(9, workingTraders.get());
+        assertEquals(0, checker.getActiveTradersCount());
     }
 }

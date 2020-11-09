@@ -6,8 +6,8 @@ import org.example.limitchecker.repository.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.example.limitchecker.TestData.ORDER1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LimitCheckerTest {
 
     CheckedOrdersStorage storage;
-    AtomicInteger workingTraders;
     LimitChecker checker;
 
     @BeforeEach
@@ -24,8 +23,7 @@ class LimitCheckerTest {
         Database db = new Database();
         List<Limit> limitList = db.getLimits();
         storage = new CheckedOrdersStorage();
-        workingTraders = new AtomicInteger(10);
-        checker = new LimitChecker(limitList, storage, workingTraders);
+        checker = new LimitChecker(limitList, storage);
     }
 
     @Test
@@ -38,8 +36,19 @@ class LimitCheckerTest {
 
     @Test
     void addPassedOrderToStorage() throws InterruptedException {
-        checker.getQueueProxy().put(ORDER1);
+        checker.put(ORDER1);
         checker.checkOrder();
         assertEquals(1, storage.getPassedOrdersCount());
+    }
+
+    @Test
+    void registerAndDeregisterTrader() throws InterruptedException {
+        assertEquals(0, checker.getActiveTradersCount());
+        Trader trader1 = new Trader(checker, new ArrayList<>());
+        assertEquals(1, checker.getActiveTradersCount());
+        Thread thread1 = new Thread(trader1);
+        thread1.start();
+        thread1.join();
+        assertEquals(0, checker.getActiveTradersCount());
     }
 }

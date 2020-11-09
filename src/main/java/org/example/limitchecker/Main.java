@@ -9,15 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static final int ORDERS_NUM = 100_000;
-    public static final int TRADERS_NUM = 50;
+    public static final int TRADERS_NUM = 25;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -27,9 +28,7 @@ public class Main {
         List<User> userList = db.getUserList();
 
         CheckedOrdersStorage storage = new CheckedOrdersStorage();
-        AtomicInteger activeTradersCount = new AtomicInteger(TRADERS_NUM);
-
-        LimitChecker checker = new LimitChecker(limitList, storage, activeTradersCount);
+        LimitChecker checker = new LimitChecker(limitList, storage);
 
         Trader trader;
         int ordersPerTrader = orderList.size() / TRADERS_NUM;
@@ -40,7 +39,7 @@ public class Main {
         for (int i = 0; i < TRADERS_NUM; i++) {
             int firstOrder = i * ordersPerTrader;
             int lastOrder = (i + 1) * ordersPerTrader;
-            trader = new Trader(checker.getQueueProxy(), orderList.subList(firstOrder, lastOrder), activeTradersCount);
+            trader = new Trader(checker, orderList.subList(firstOrder, lastOrder));
             traderExecutor.submit(trader);
         }
 
