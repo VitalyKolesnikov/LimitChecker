@@ -2,13 +2,12 @@ package org.example.limitchecker.model.limit;
 
 import org.junit.jupiter.api.Test;
 
-import static org.example.limitchecker.TestData.ORDER1;
-import static org.example.limitchecker.TestData.ORDER2;
+import static org.example.limitchecker.TestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LotsInOrderPerUserPerSymbolLimitTest extends LotsInOrderPerUserLimitTest {
 
-    Limit limit = new LotsInOrderPerUserPerSymbolLimit(45, userStorage.getByName("Mike"), "ETSY");
+    Limit limit = new LotsInOrderPerUserPerSymbolLimit(45, USER_MIKE, "ETSY");
 
     @Test
     void check() {
@@ -18,7 +17,9 @@ class LotsInOrderPerUserPerSymbolLimitTest extends LotsInOrderPerUserLimitTest {
 
     @Test
     void zeroOrNegativeMaxLots() {
-        assertThrows(IllegalArgumentException.class, () -> new LotsInOrderPerUserPerSymbolLimit(0, userStorage.getByName("Mike"), "ETSY"));
-        assertThrows(IllegalArgumentException.class, () -> new LotsInOrderPerUserPerSymbolLimit(-10, userStorage.getByName("Mike"), "ETSY"));
+        assertThrows(IllegalArgumentException.class, () ->
+                new LotsInOrderPerUserPerSymbolLimit(0, USER_MIKE, "ETSY"));
+        assertThrows(IllegalArgumentException.class, () ->
+                new LotsInOrderPerUserPerSymbolLimit(-10, USER_MIKE, "ETSY"));
     }
 }

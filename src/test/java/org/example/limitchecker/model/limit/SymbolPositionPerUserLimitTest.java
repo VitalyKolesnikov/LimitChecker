@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SymbolPositionPerUserLimitTest extends SymbolPositionLimitTest {
 
-    Limit limit1 = new SymbolPositionPerUserLimit(-30, 100, "ETSY", userStorage.getByName("Mike"));
-    Limit limit2 = new SymbolPositionPerUserLimit(-75, 75, "HOME", userStorage.getByName("John"));
+    Limit limit1 = new SymbolPositionPerUserLimit(-30, 100, "ETSY", USER_MIKE);
+    Limit limit2 = new SymbolPositionPerUserLimit(-75, 75, "HOME", USER_JOHN);
 
     @Test
     void check() {
@@ -24,6 +24,6 @@ class SymbolPositionPerUserLimitTest extends SymbolPositionLimitTest {
     @Test
     void minPositionGreaterThanMaxPosition() {
         assertThrows(IllegalArgumentException.class, () ->
-                new SymbolPositionPerUserLimit(100, 50, "ETSY", userStorage.getByName("Mike")));
+                new SymbolPositionPerUserLimit(100, 50, "ETSY", USER_MIKE));
     }
 }

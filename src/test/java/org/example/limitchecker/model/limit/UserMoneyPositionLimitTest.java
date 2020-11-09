@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserMoneyPositionLimitTest extends AbstractLimitTest {
 
-    Limit limit1 = new UserMoneyPositionLimit(-5000, 5000, userStorage.getByName("Mike"));
-    Limit limit2 = new UserMoneyPositionLimit(-1500, 1500, userStorage.getByName("John"));
+    Limit limit1 = new UserMoneyPositionLimit(-5000, 5000, USER_MIKE);
+    Limit limit2 = new UserMoneyPositionLimit(-1500, 1500, USER_JOHN);
 
     @Test
     void check() {
@@ -23,6 +23,7 @@ class UserMoneyPositionLimitTest extends AbstractLimitTest {
 
     @Test
     void minPositionGreaterThanMaxPosition() {
-        assertThrows(IllegalArgumentException.class, () -> new UserMoneyPositionLimit(1000, 500, userStorage.getByName("Mike")));
+        assertThrows(IllegalArgumentException.class, ()
+                -> new UserMoneyPositionLimit(1000, 500, USER_MIKE));
     }
 }

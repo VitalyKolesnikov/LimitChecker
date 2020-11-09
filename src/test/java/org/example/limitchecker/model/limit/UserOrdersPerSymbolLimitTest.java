@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserOrdersPerSymbolLimitTest extends UserOrdersLimitTest {
 
-    Limit limit = new UserOrdersPerSymbolLimit(1, userStorage.getByName("Mike"), "ETSY");
+    Limit limit = new UserOrdersPerSymbolLimit(1, USER_MIKE, "ETSY");
 
     @Test
     void check() {
@@ -18,6 +18,6 @@ class UserOrdersPerSymbolLimitTest extends UserOrdersLimitTest {
 
     @Test
     void zeroOrNegativeMaxOrders() {
-        assertThrows(IllegalArgumentException.class, () -> new UserOrdersPerSymbolLimit(-5, userStorage.getByName("Mike"), "ETSY"));
+        assertThrows(IllegalArgumentException.class, () -> new UserOrdersPerSymbolLimit(-5, USER_MIKE, "ETSY"));
     }
 }

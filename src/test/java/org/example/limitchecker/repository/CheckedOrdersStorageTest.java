@@ -50,32 +50,32 @@ class CheckedOrdersStorageTest {
     void getUserPassedOrdersCount() {
         checkedOrdersStorage.addOrder(ORDER1);
         checkedOrdersStorage.addOrder(ORDER2);
-        assertEquals(2, checkedOrdersStorage.getUserPassedOrdersCount(userStorage.getByName("Mike")));
-        assertEquals(0, checkedOrdersStorage.getUserPassedOrdersCount(userStorage.getByName("Sam")));
-        assertEquals(0, checkedOrdersStorage.getUserPassedOrdersCount(userStorage.getByName("John")));
+        assertEquals(2, checkedOrdersStorage.getUserPassedOrdersCount(USER_MIKE));
+        assertEquals(0, checkedOrdersStorage.getUserPassedOrdersCount(USER_SAM));
+        assertEquals(0, checkedOrdersStorage.getUserPassedOrdersCount(USER_JOHN));
         checkedOrdersStorage.addOrder(ORDER3);
         checkedOrdersStorage.addOrder(ORDER4);
         checkedOrdersStorage.addOrder(ORDER5);
-        assertEquals(1, checkedOrdersStorage.getUserPassedOrdersCount(userStorage.getByName("Sam")));
-        assertEquals(2, checkedOrdersStorage.getUserPassedOrdersCount(userStorage.getByName("John")));
+        assertEquals(1, checkedOrdersStorage.getUserPassedOrdersCount(USER_SAM));
+        assertEquals(2, checkedOrdersStorage.getUserPassedOrdersCount(USER_JOHN));
     }
 
     @Test
     void getUserMoneyPosition() {
-        assertNull(checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("Mike")));
-        assertNull(checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("David")));
+        assertNull(checkedOrdersStorage.getUserMoneyPosition(USER_MIKE));
+        assertNull(checkedOrdersStorage.getUserMoneyPosition(USER_NOT_FOUND));
         checkedOrdersStorage.addOrder(ORDER1);
         checkedOrdersStorage.addOrder(ORDER2);
-        assertEquals(15307.6, checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("Mike")), DELTA);
+        assertEquals(15307.6, checkedOrdersStorage.getUserMoneyPosition(USER_MIKE), DELTA);
         checkedOrdersStorage.addOrder(ORDER6);
-        assertEquals(3898.75, checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("Mike")), DELTA);
+        assertEquals(3898.75, checkedOrdersStorage.getUserMoneyPosition(USER_MIKE), DELTA);
         checkedOrdersStorage.addOrder(ORDER3);
         checkedOrdersStorage.addOrder(ORDER4);
         checkedOrdersStorage.addOrder(ORDER5);
-        assertEquals(23770.2, checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("John")), DELTA);
-        assertEquals(-16056.9, checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("Sam")), DELTA);
+        assertEquals(23770.2, checkedOrdersStorage.getUserMoneyPosition(USER_JOHN), DELTA);
+        assertEquals(-16056.9, checkedOrdersStorage.getUserMoneyPosition(USER_SAM), DELTA);
         checkedOrdersStorage.addOrder(ORDER7);
-        assertEquals(0, checkedOrdersStorage.getUserMoneyPosition(userStorage.getByName("Sam")), DELTA);
+        assertEquals(0, checkedOrdersStorage.getUserMoneyPosition(USER_SAM), DELTA);
     }
 
     @Test
@@ -96,29 +96,29 @@ class CheckedOrdersStorageTest {
 
     @Test
     void getSymbolPositionPerUser() {
-        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("ETSY", userStorage.getByName("David")));
-        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("NNNN", userStorage.getByName("Mike")));
-        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("ETSY", userStorage.getByName("Mike")));
+        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("ETSY", USER_NOT_FOUND));
+        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("NNNN", USER_MIKE));
+        assertNull(checkedOrdersStorage.getSymbolPositionPerUser("ETSY", USER_MIKE));
         checkedOrdersStorage.addOrder(ORDER1);
         checkedOrdersStorage.addOrder(ORDER2);
-        assertEquals(110, checkedOrdersStorage.getSymbolPositionPerUser("ETSY", userStorage.getByName("Mike")));
+        assertEquals(110, checkedOrdersStorage.getSymbolPositionPerUser("ETSY", USER_MIKE));
         checkedOrdersStorage.addOrder(ORDER4);
-        assertEquals(-60, checkedOrdersStorage.getSymbolPositionPerUser("HOME", userStorage.getByName("John")));
+        assertEquals(-60, checkedOrdersStorage.getSymbolPositionPerUser("HOME", USER_JOHN));
         checkedOrdersStorage.addOrder(ORDER8);
-        assertEquals(0, checkedOrdersStorage.getSymbolPositionPerUser("HOME", userStorage.getByName("John")));
+        assertEquals(0, checkedOrdersStorage.getSymbolPositionPerUser("HOME", USER_JOHN));
     }
 
     @Test
     void getUserOrdersPerSymbolCount() {
-        assertEquals(0, checkedOrdersStorage.getUserOrdersPerSymbolCount(userStorage.getByName("Mike"), "ETSY"));
+        assertEquals(0, checkedOrdersStorage.getUserOrdersPerSymbolCount(USER_MIKE, "ETSY"));
         checkedOrdersStorage.addOrder(ORDER1);
         checkedOrdersStorage.addOrder(ORDER2);
-        assertEquals(2, checkedOrdersStorage.getUserOrdersPerSymbolCount(userStorage.getByName("Mike"), "ETSY"));
+        assertEquals(2, checkedOrdersStorage.getUserOrdersPerSymbolCount(USER_MIKE, "ETSY"));
         checkedOrdersStorage.addOrder(ORDER3);
         checkedOrdersStorage.addOrder(ORDER4);
         checkedOrdersStorage.addOrder(ORDER5);
-        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(userStorage.getByName("Sam"), "TSLA"));
-        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(userStorage.getByName("John"), "TSLA"));
-        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(userStorage.getByName("John"), "HOME"));
+        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(USER_SAM, "TSLA"));
+        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(USER_JOHN, "TSLA"));
+        assertEquals(1, checkedOrdersStorage.getUserOrdersPerSymbolCount(USER_JOHN, "HOME"));
     }
 }

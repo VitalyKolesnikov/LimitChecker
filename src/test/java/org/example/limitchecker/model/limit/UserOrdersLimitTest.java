@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserOrdersLimitTest extends AbstractLimitTest {
 
-    Limit limit = new UserOrdersLimit(2, userStorage.getByName("Mike"));
+    Limit limit = new UserOrdersLimit(2, USER_MIKE);
 
     @Test
     void check() {
@@ -21,6 +21,6 @@ class UserOrdersLimitTest extends AbstractLimitTest {
 
     @Test
     void zeroOrNegativeMaxOrders() {
-        assertThrows(IllegalArgumentException.class, () -> new UserOrdersLimit(-5, userStorage.getByName("Mike")));
+        assertThrows(IllegalArgumentException.class, () -> new UserOrdersLimit(-5, USER_MIKE));
     }
 }
