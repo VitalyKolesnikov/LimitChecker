@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class CheckedOrdersStorageTest {
 
     CheckedOrdersStorage checkedOrdersStorage;
-    UserStorage userStorage = new UserStorage();
     public static final double DELTA = 0.0001;
 
     @BeforeEach

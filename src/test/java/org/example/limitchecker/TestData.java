@@ -4,6 +4,7 @@ import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.Side;
 import org.example.limitchecker.model.Stock;
 import org.example.limitchecker.model.User;
+import org.example.limitchecker.repository.Database;
 import org.example.limitchecker.repository.UserStorage;
 
 import java.time.LocalTime;
@@ -15,6 +16,7 @@ public class TestData {
     public static final Stock STOCK3 = new Stock("HOME", 21.85);
 
     public static final UserStorage userStorage = new UserStorage();
+    public static final Database DB = new Database();
 
     public static final User USER_MIKE = userStorage.getByName("Mike");
     public static final User USER_JOHN = userStorage.getByName("John");

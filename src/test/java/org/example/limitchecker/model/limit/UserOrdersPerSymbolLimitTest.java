@@ -17,7 +17,8 @@ class UserOrdersPerSymbolLimitTest extends UserOrdersLimitTest {
     }
 
     @Test
-    void zeroOrNegativeMaxOrders() {
-        assertThrows(IllegalArgumentException.class, () -> new UserOrdersPerSymbolLimit(-5, USER_MIKE, "ETSY"));
+    void negativeMaxOrders() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new UserOrdersPerSymbolLimit(-5, USER_MIKE, "ETSY"));
     }
 }

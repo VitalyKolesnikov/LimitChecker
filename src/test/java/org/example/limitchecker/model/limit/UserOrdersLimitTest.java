@@ -20,7 +20,7 @@ class UserOrdersLimitTest extends AbstractLimitTest {
     }
 
     @Test
-    void zeroOrNegativeMaxOrders() {
-        assertThrows(IllegalArgumentException.class, () -> new UserOrdersLimit(-5, USER_MIKE));
+    void negativeMaxOrders() {
+        assertThrows(IllegalArgumentException.class, () -> new UserOrdersLimit(-5, USER_JOHN));
     }
 }

@@ -7,13 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LotsInOrderPerUserLimitTest extends LotsInOrderLimitTest {
 
-    Limit limit1 = new LotsInOrderPerUserLimit(45, USER_MIKE);
-    Limit limit2 = new LotsInOrderPerUserLimit(45, USER_NOT_FOUND);
-
     @Test
     void check() {
-        assertTrue(limit1.check(ORDER1, checkedOrdersStorage));
-        assertFalse(limit1.check(ORDER2, checkedOrdersStorage));
+        limit = new LotsInOrderPerUserLimit(45, USER_MIKE);
+        assertTrue(limit.check(ORDER1, checkedOrdersStorage));
+        assertFalse(limit.check(ORDER2, checkedOrdersStorage));
     }
 
     @Test
@@ -24,6 +22,7 @@ class LotsInOrderPerUserLimitTest extends LotsInOrderLimitTest {
 
     @Test
     void userNotFound() {
-        assertTrue(limit2.check(ORDER1, checkedOrdersStorage));
+        limit = new LotsInOrderPerUserLimit(45, USER_NOT_FOUND);
+        assertTrue(limit.check(ORDER1, checkedOrdersStorage));
     }
 }

@@ -9,9 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.limitchecker.TestData.ORDER1;
+import static org.example.limitchecker.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LimitCheckerTest {
 
@@ -20,15 +19,15 @@ class LimitCheckerTest {
 
     @BeforeEach
     void setUp() {
-        Database db = new Database();
-        List<Limit> limitList = db.getLimits();
+        List<Limit> limitList = DB.getLimits();
         storage = new CheckedOrdersStorage();
         checker = new LimitChecker(limitList, storage);
     }
 
     @Test
     void takeFromEmptyQueue() throws InterruptedException {
-        Thread checkerThread = new Thread(() -> assertThrows(InterruptedException.class, () -> checker.checkOrder()));
+        new Trader(checker, ORDER_LIST);
+        Thread checkerThread = new Thread(checker);
         checkerThread.start();
         Thread.sleep(10);
         assertEquals(Thread.State.WAITING, checkerThread.getState());
