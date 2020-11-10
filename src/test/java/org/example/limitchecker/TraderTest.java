@@ -19,13 +19,9 @@ class TraderTest {
     }
 
     @Test
-    void run() throws InterruptedException {
+    void run() {
         assertEquals(0, checker.getActiveTradersCount());
         trader = new Trader(checker, ORDER_LIST);
         assertEquals(1, checker.getActiveTradersCount());
-        Thread traderThread = new Thread(trader);
-        traderThread.start();
-        traderThread.join();
-        assertEquals(0, checker.getActiveTradersCount());
     }
 }

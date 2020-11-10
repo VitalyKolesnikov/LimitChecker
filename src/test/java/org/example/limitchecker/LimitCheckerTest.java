@@ -1,8 +1,8 @@
 package org.example.limitchecker;
 
+import org.example.limitchecker.model.OrderTask;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
-import org.example.limitchecker.repository.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,13 +29,13 @@ class LimitCheckerTest {
         new Trader(checker, ORDER_LIST);
         Thread checkerThread = new Thread(checker);
         checkerThread.start();
-        Thread.sleep(10);
-        assertEquals(Thread.State.WAITING, checkerThread.getState());
+        Thread.sleep(5);
+        assertEquals(Thread.State.TIMED_WAITING, checkerThread.getState());
     }
 
     @Test
     void addPassedOrderToStorage() throws InterruptedException {
-        checker.put(ORDER1);
+        checker.submitOrderTask(new OrderTask(new Trader(checker, new ArrayList<>()), ORDER1));
         checker.checkOrder();
         assertEquals(1, storage.getPassedOrdersCount());
     }
