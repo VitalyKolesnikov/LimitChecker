@@ -1,27 +1,28 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.repository.CheckedOrdersStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import static org.example.limitchecker.TestData.DB;
 import static org.example.limitchecker.TestData.ORDER_LIST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class TraderTest {
 
-    Trader trader;
+    @Mock
     LimitChecker checker;
 
     @BeforeEach
     void setUp() {
-        checker = new LimitChecker(DB.getLimits(), new CheckedOrdersStorage());
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void run() {
-        assertEquals(0, checker.getActiveTradersCount());
-        trader = new Trader(checker, ORDER_LIST);
-        assertEquals(1, checker.getActiveTradersCount());
+    void newTrader_ShouldBeRegistered_InChecker() {
+        new Trader(checker, ORDER_LIST);
+        verify(checker, times(1)).registerTrader();
+        verify(checker, never()).deregisterTrader();
     }
+
 }
