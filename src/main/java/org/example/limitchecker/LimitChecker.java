@@ -39,8 +39,7 @@ public class LimitChecker implements Runnable, QueueProxy {
         for (Limit limit : limits) {
             if (!limit.check(order, storage)) {
                 orderTask.getTrader().submitResult(new CheckResult(order, false));
-                log.info("Order {} status: __REJECT__ ({} violation)",
-                        order, limit.getClass().getSimpleName());
+                log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
                 return;
             }
         }

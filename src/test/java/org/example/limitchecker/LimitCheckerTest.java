@@ -1,28 +1,39 @@
 package org.example.limitchecker;
 
+import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.OrderTask;
 import org.example.limitchecker.model.limit.Limit;
 import org.example.limitchecker.repository.CheckedOrdersStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.example.limitchecker.TestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class LimitCheckerTest {
 
+    @Mock
     CheckedOrdersStorage storage;
-    LimitChecker checker;
 
-    @BeforeEach
-    void setUp() {
-        List<Limit> limitList = DB.getLimits();
-        storage = new CheckedOrdersStorage();
-        checker = new LimitChecker(limitList, storage);
-    }
+    @Mock
+    List<Limit> limitList;
+
+    @Mock
+    Iterator<Limit> limitIterator;
+
+    @InjectMocks
+    LimitChecker checker;
 
     @Test
     void takeFromEmptyQueue() throws InterruptedException {
@@ -34,10 +45,11 @@ class LimitCheckerTest {
     }
 
     @Test
-    void addPassedOrderToStorage() throws InterruptedException {
+    void passedOrders_ShouldBeAdded_ToStorage() throws InterruptedException {
+        when(limitList.iterator()).thenReturn(limitIterator);
         checker.submitOrderTask(new OrderTask(new Trader(checker, new ArrayList<>()), ORDER1));
         checker.checkOrder();
-        assertEquals(1, storage.getPassedOrdersCount());
+        verify(storage).addOrder(ORDER1);
     }
 
     @Test
