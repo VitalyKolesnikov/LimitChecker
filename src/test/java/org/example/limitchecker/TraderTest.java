@@ -1,6 +1,5 @@
 package org.example.limitchecker;
 
-import org.example.limitchecker.model.CheckResult;
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.OrderTask;
 import org.junit.jupiter.api.Test;
@@ -9,12 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,16 +38,6 @@ class TraderTest {
     void submitOrderTask() throws InterruptedException {
         trader.submitOrderTask(any(Order.class));
         verify(checker).submitOrderTask(any(OrderTask.class));
-    }
-
-    @Test
-    void submitResult_ShouldAddResult_ToResultQueue() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
-        Field field = trader.getClass().getDeclaredField("resultQueue");
-        field.setAccessible(true);
-        BlockingQueue<CheckResult> resultQueue = (BlockingQueue<CheckResult>) field.get(trader);
-        assertEquals(0, resultQueue.size());
-        trader.submitResult(mock(CheckResult.class));
-        assertEquals(1, resultQueue.size());
     }
 
     @Test

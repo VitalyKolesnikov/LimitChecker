@@ -53,8 +53,6 @@ public class LimitChecker implements Runnable, QueueProxy {
         while (activeTradersCount.get() != 0 || !orderQueue.isEmpty()) {
             try {
                 checkOrder();
-//                log.info("orderQueue size: " + orderQueue.size());
-//                log.info("Active traders: " + activeTradersCount);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

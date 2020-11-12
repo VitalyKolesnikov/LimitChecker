@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 public class Trader implements Runnable {
 
@@ -16,7 +16,7 @@ public class Trader implements Runnable {
 
     private final QueueProxy orderQueue;
     private final List<Order> orderList;
-    private final BlockingQueue<CheckResult> resultQueue = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<CheckResult> resultQueue = new SynchronousQueue<>();
 
     public Trader(QueueProxy orderQueue, List<Order> orderList) {
         this.orderQueue = orderQueue;
