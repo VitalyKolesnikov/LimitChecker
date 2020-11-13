@@ -40,11 +40,13 @@ public class Main {
         }
         traderExecutor.shutdown();
 
+        long startTime = System.nanoTime();
+
         ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
-        Future<Long> checkerResult = checkerExecutor.submit(checker);
+        Future<Integer> checkerResult = checkerExecutor.submit(checker);
         checkerExecutor.shutdown();
 
-        Long totalTime = checkerResult.get();
+        int passedOrdersCount = checkerResult.get();
 
         log.info("---------------------------");
         log.info("All orders has been checked");
@@ -57,7 +59,7 @@ public class Main {
                 storage.getUserMoneyPosition(e) == null ? null : storage.getUserMoneyPosition(e).intValue() + " $"));
 
         log.info("---------------------------------------");
-        log.info("Time: {} milliseconds", totalTime);
-        log.info("Orders passed: {}/{}", storage.getPassedOrdersCount(), orderList.size());
+        log.info("Time: {} milliseconds", TimeUnit.MILLISECONDS.toSeconds(System.nanoTime() - startTime));
+        log.info("Orders passed: {}/{}", passedOrdersCount, orderList.size());
     }
 }

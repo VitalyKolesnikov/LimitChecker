@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LimitChecker implements Callable<Long>, QueueProxy {
+public class LimitChecker implements Callable<Integer>, QueueProxy {
 
     private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
     public static final int QUEUE_SIZE = 500;
@@ -33,34 +33,34 @@ public class LimitChecker implements Callable<Long>, QueueProxy {
         this.storage = storage;
     }
 
-    public void checkOrder() throws InterruptedException {
+    public boolean checkOrder() throws InterruptedException {
         OrderTask orderTask = orderQueue.poll(10, TimeUnit.MILLISECONDS);
-        if (orderTask == null) return;
+        if (orderTask == null) return false;
         Order order = orderTask.getOrder();
         for (Limit limit : limits) {
             if (!limit.check(order, storage)) {
                 orderTask.getTrader().submitResult(new CheckResult(order, false));
                 log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
-                return;
+                return false;
             }
         }
         orderTask.getTrader().submitResult(new CheckResult(order, true));
         log.info("Order {} status: __PASS__", order);
         storage.addOrder(order);
+        return true;
     }
 
     @Override
-    public Long call() {
-        long startTime = System.nanoTime();
+    public Integer call() {
+        int passedOrdersCount = 0;
         while (activeTradersCount.get() != 0 || !orderQueue.isEmpty()) {
             try {
-                checkOrder();
+                if (checkOrder()) passedOrdersCount++;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        long endTime = System.nanoTime();
-        return TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+        return passedOrdersCount;
     }
 
     @Override

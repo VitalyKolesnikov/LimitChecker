@@ -62,7 +62,7 @@ class LimitCheckerTest {
         checker = new LimitChecker(new Database().getLimits(), storage);
         new Trader(checker, ORDER_LIST);
         ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
-        Future<Long> checkerResult = checkerExecutor.submit(checker);
+        Future<Integer> checkerResult = checkerExecutor.submit(checker);
         checkerExecutor.shutdown();
         checker.checkOrder();
         Thread.sleep(50);
