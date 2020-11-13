@@ -10,6 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.mockito.Mockito.*;
 
@@ -44,7 +47,9 @@ class TraderTest {
     void trader_ShouldDeregister_WhenFinished() throws InterruptedException {
         when(orderList.iterator()).thenReturn(orderIterator);
         new Thread(trader).start();
-        new Thread(checker).start();
+        ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
+        checkerExecutor.submit(checker);
+        checkerExecutor.shutdown();
         Thread.sleep(10);
         verify(checker).deregisterTrader();
     }

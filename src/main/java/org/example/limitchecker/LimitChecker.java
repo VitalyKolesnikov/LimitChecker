@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LimitChecker implements Runnable, QueueProxy {
+public class LimitChecker implements Callable<Long>, QueueProxy {
 
     private static final Logger log = LoggerFactory.getLogger(LimitChecker.class);
     public static final int QUEUE_SIZE = 500;
@@ -49,7 +50,8 @@ public class LimitChecker implements Runnable, QueueProxy {
     }
 
     @Override
-    public void run() {
+    public Long call() {
+        long startTime = System.nanoTime();
         while (activeTradersCount.get() != 0 || !orderQueue.isEmpty()) {
             try {
                 checkOrder();
@@ -57,6 +59,8 @@ public class LimitChecker implements Runnable, QueueProxy {
                 e.printStackTrace();
             }
         }
+        long endTime = System.nanoTime();
+        return TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
     }
 
     @Override
