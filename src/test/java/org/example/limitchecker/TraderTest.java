@@ -2,36 +2,28 @@ package org.example.limitchecker;
 
 import org.example.limitchecker.model.Order;
 import org.example.limitchecker.model.OrderTask;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class TraderTest {
 
-    @Mock
     LimitChecker checker;
-
-    @Mock
-    List<Order> orderList;
-
-    @Mock
-    Iterator<Order> orderIterator;
-
-    @InjectMocks
     Trader trader;
 
+    @BeforeEach
+    void setUp() {
+        checker = mock(LimitChecker.class);
+        trader = new Trader(checker, new ArrayList<>());
+    }
+
     @Test
-    void newTrader_ShouldBeRegistered_InChecker() {
+    void newTraderShouldRegisterInChecker() {
         verify(checker).registerTrader(trader);
         verify(checker, never()).deregisterTrader(trader);
     }
@@ -43,8 +35,7 @@ class TraderTest {
     }
 
     @Test
-    void trader_ShouldDeregister_WhenFinished() throws InterruptedException {
-        when(orderList.iterator()).thenReturn(orderIterator);
+    void traderShouldDeregisterWhenFinished() throws InterruptedException {
         new Thread(trader).start();
         ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
         checkerExecutor.submit(checker);
