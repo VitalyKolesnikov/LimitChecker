@@ -32,8 +32,8 @@ class TraderTest {
 
     @Test
     void newTrader_ShouldBeRegistered_InChecker() {
-        verify(checker).registerTrader();
-        verify(checker, never()).deregisterTrader();
+        verify(checker).registerTrader(trader);
+        verify(checker, never()).deregisterTrader(trader);
     }
 
     @Test
@@ -50,6 +50,6 @@ class TraderTest {
         checkerExecutor.submit(checker);
         checkerExecutor.shutdown();
         Thread.sleep(10);
-        verify(checker).deregisterTrader();
+        verify(checker).deregisterTrader(trader);
     }
 }

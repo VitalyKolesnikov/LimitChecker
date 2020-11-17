@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,7 +17,6 @@ import java.util.concurrent.Future;
 
 import static org.example.limitchecker.TestData.ORDER1;
 import static org.example.limitchecker.TestData.ORDER_LIST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,17 +42,6 @@ class LimitCheckerTest {
         new Thread(new Trader(checker, List.of(ORDER1))).start();
         checker.checkOrder();
         verify(storage).addOrder(ORDER1);
-    }
-
-    @Test
-    void registerAndDeregisterTrader() throws InterruptedException {
-        assertEquals(0, checker.getActiveTradersCount());
-        Trader trader1 = new Trader(checker, new ArrayList<>());
-        assertEquals(1, checker.getActiveTradersCount());
-        Thread thread1 = new Thread(trader1);
-        thread1.start();
-        thread1.join();
-        assertEquals(0, checker.getActiveTradersCount());
     }
 
     @Test

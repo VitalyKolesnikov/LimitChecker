@@ -8,12 +8,13 @@ import org.example.limitchecker.repository.CheckedOrdersStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class LimitChecker implements Callable<Integer>, QueueProxy {
 
@@ -23,7 +24,7 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
     private final BlockingQueue<OrderTask> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
-    private final AtomicInteger activeTradersCount = new AtomicInteger(0);
+    private final Map<Trader, CheckResult> results = new HashMap<>();
 
     public LimitChecker(List<Limit> limits, CheckedOrdersStorage storage) {
         if (limits.isEmpty()) {
@@ -35,25 +36,32 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
 
     public boolean checkOrder() throws InterruptedException {
         OrderTask orderTask = orderQueue.poll(10, TimeUnit.MILLISECONDS);
-        if (orderTask == null) return false;
-        Order order = orderTask.getOrder();
-        for (Limit limit : limits) {
-            if (!limit.check(order, storage)) {
-                orderTask.getTrader().submitResult(new CheckResult(order, false));
-                log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
-                return false;
-            }
+        if (orderTask == null) {
+            return false;
         }
-        orderTask.getTrader().submitResult(new CheckResult(order, true));
-        log.info("Order {} status: __PASS__", order);
-        storage.addOrder(order);
-        return true;
+        Trader trader = orderTask.getTrader();
+        Order order = orderTask.getOrder();
+        synchronized (trader) {
+            for (Limit limit : limits) {
+                if (!limit.check(order, storage)) {
+                    results.put(trader, new CheckResult(order, false));
+                    log.info("Order {} status: __REJECT__ ({} violation)", order, limit.getClass().getSimpleName());
+                    trader.notify();
+                    return false;
+                }
+            }
+            results.put(trader, new CheckResult(order, true));
+            log.info("Order {} status: __PASS__", order);
+            storage.addOrder(order);
+            trader.notify();
+            return true;
+        }
     }
 
     @Override
     public Integer call() {
         int passedOrdersCount = 0;
-        while (activeTradersCount.get() != 0 || !orderQueue.isEmpty()) {
+        while (results.size() != 0 || !orderQueue.isEmpty()) {
             try {
                 if (checkOrder()) passedOrdersCount++;
             } catch (InterruptedException e) {
@@ -69,16 +77,18 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
     }
 
     @Override
-    public void registerTrader() {
-        activeTradersCount.incrementAndGet();
+    public void registerTrader(Trader trader) {
+        results.put(trader, null);
     }
 
     @Override
-    public void deregisterTrader() {
-        activeTradersCount.decrementAndGet();
+    public void deregisterTrader(Trader trader) {
+        results.remove(trader);
     }
 
-    public int getActiveTradersCount() {
-        return activeTradersCount.get();
+    @Override
+    public CheckResult getResult(Trader trader) {
+        return results.get(trader);
     }
+
 }

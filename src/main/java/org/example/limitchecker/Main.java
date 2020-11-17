@@ -15,8 +15,8 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static final int ORDERS_NUM = 100_000;
-    public static final int TRADERS_NUM = 1000;
+    public static final int ORDERS_NUM = 10_000;
+    public static final int TRADERS_NUM = 100;
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
