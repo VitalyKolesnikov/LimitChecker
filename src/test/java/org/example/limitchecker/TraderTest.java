@@ -22,8 +22,8 @@ class TraderTest {
 
     @Test
     void newTraderShouldRegisterInChecker() {
+        trader.run();
         verify(checker).registerTrader(trader);
-        verify(checker, never()).deregisterTrader(trader);
     }
 
     @Test

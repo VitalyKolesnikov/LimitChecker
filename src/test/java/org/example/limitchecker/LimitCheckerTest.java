@@ -5,15 +5,12 @@ import org.example.limitchecker.repository.Database;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static org.example.limitchecker.TestData.ORDER1;
 import static org.example.limitchecker.TestData.ORDER_LIST;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 class LimitCheckerTest {
 
@@ -29,17 +26,15 @@ class LimitCheckerTest {
     }
 
     @Test
-    void takeFromEmptyQueue() throws InterruptedException {
-        CheckedOrdersStorage storage = new CheckedOrdersStorage();
+    void checkOrder() throws InterruptedException {
+        CheckedOrdersStorage storage = mock(CheckedOrdersStorage.class);
         LimitChecker checker = new LimitChecker(new Database().getLimits(), storage);
-        new Trader(checker, ORDER_LIST);
-        ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
-        Future<Integer> checkerResult = checkerExecutor.submit(checker);
-        checkerExecutor.shutdown();
 
-        checker.checkOrder();
-        Thread.sleep(50);
+        new Thread(new Trader(checker, ORDER_LIST)).start();
 
-        assertFalse(checkerResult.isDone());
+        assertTrue(checker.checkOrder());
+        assertFalse(checker.checkOrder());
+        assertFalse(checker.checkOrder());
     }
+
 }

@@ -18,7 +18,6 @@ public class Trader implements Runnable {
     public Trader(QueueProxy orderQueue, List<Order> orderList) {
         this.orderQueue = orderQueue;
         this.orderList = orderList;
-        orderQueue.registerTrader(this);
     }
 
     public void submitOrderTask(Order order) throws InterruptedException {
@@ -28,6 +27,7 @@ public class Trader implements Runnable {
 
     @Override
     public void run() {
+        orderQueue.registerTrader(this);
         for (Order order : orderList) {
             try {
                 synchronized (this) {

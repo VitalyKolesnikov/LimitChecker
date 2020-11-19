@@ -15,6 +15,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LimitChecker implements Callable<Integer>, QueueProxy {
 
@@ -24,6 +25,7 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
     private final BlockingQueue<OrderTask> orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
     private final List<Limit> limits;
     private final CheckedOrdersStorage storage;
+    private final AtomicInteger activeTradersCount = new AtomicInteger(0);
     private final Map<Trader, CheckResult> results = new HashMap<>();
 
     public LimitChecker(List<Limit> limits, CheckedOrdersStorage storage) {
@@ -61,7 +63,7 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
     @Override
     public Integer call() {
         int passedOrdersCount = 0;
-        while (results.size() != 0 || !orderQueue.isEmpty()) {
+        while (activeTradersCount.get() != 0 || !orderQueue.isEmpty()) {
             try {
                 if (checkOrder()) passedOrdersCount++;
             } catch (InterruptedException e) {
@@ -78,11 +80,13 @@ public class LimitChecker implements Callable<Integer>, QueueProxy {
 
     @Override
     public void registerTrader(Trader trader) {
+        activeTradersCount.incrementAndGet();
         results.put(trader, null);
     }
 
     @Override
     public void deregisterTrader(Trader trader) {
+        activeTradersCount.decrementAndGet();
         results.remove(trader);
     }
 
