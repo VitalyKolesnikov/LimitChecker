@@ -21,8 +21,10 @@ class LimitCheckerTest {
     void passedOrdersShouldBeAddedToStorage() throws InterruptedException {
         CheckedOrdersStorage storage = mock(CheckedOrdersStorage.class);
         LimitChecker checker = new LimitChecker(new Database().getLimits(), storage);
+
         new Thread(new Trader(checker, List.of(ORDER1))).start();
         checker.checkOrder();
+
         verify(storage).addOrder(ORDER1);
     }
 
@@ -34,8 +36,10 @@ class LimitCheckerTest {
         ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
         Future<Integer> checkerResult = checkerExecutor.submit(checker);
         checkerExecutor.shutdown();
+
         checker.checkOrder();
         Thread.sleep(50);
+
         assertFalse(checkerResult.isDone());
     }
 }

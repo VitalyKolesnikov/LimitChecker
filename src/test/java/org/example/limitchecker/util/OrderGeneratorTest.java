@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderGeneratorTest {
@@ -16,9 +17,9 @@ class OrderGeneratorTest {
     @Test
     void generate() {
         List<Order> orderList = generator.generate(1000);
-        assertEquals(1000, orderList.size());
-        assertTrue(orderList.stream().map(Order::getSide).anyMatch(Side.BUY::equals));
-        assertTrue(orderList.stream().map(Order::getSide).anyMatch(Side.SELL::equals));
+        assertThat(orderList).hasSize(1000);
+        assertThat(orderList).extracting(Order::getSide).contains(Side.BUY);
+        assertThat(orderList).extracting(Order::getSide).contains(Side.SELL);
         assertTrue(orderList.stream().map(Order::getPrice).anyMatch(Objects::isNull));
     }
 

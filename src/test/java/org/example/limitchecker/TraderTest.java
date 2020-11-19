@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.mockito.Mockito.*;
 
@@ -36,11 +34,7 @@ class TraderTest {
 
     @Test
     void traderShouldDeregisterWhenFinished() throws InterruptedException {
-        new Thread(trader).start();
-        ExecutorService checkerExecutor = Executors.newSingleThreadExecutor();
-        checkerExecutor.submit(checker);
-        checkerExecutor.shutdown();
-        Thread.sleep(10);
+        new Thread(trader).run();
         verify(checker).deregisterTrader(trader);
     }
 }
